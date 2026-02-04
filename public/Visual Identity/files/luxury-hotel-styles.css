@@ -1,0 +1,747 @@
+/* ============================================
+   LUXURY HOTEL - CSS COMPLET
+   Version: 1.0.0
+   ============================================ */
+
+/* ==================== VARIABLES ==================== */
+:root {
+  /* Couleurs Principales */
+  --primary-gold: #C9A96E;
+  --primary-gold-light: #D4BC8E;
+  --primary-gold-dark: #A68A5C;
+  --primary-dark: #1A1A1A;
+  --primary-dark-rgb: 26, 26, 26;
+  --primary-light: #FAFAF8;
+  --pure-white: #FFFFFF;
+  
+  /* Couleurs Secondaires */
+  --secondary-taupe: #8B8680;
+  --secondary-taupe-light: #B5B1AC;
+  --secondary-taupe-dark: #5D5A56;
+  --secondary-stone: #E8E4DC;
+  --secondary-stone-light: #F2F0EB;
+  --accent-burgundy: #6B2C3E;
+  --accent-burgundy-hover: #8A3850;
+  
+  /* Couleurs d'État */
+  --success: #2D5C3F;
+  --success-light: #E8F3EC;
+  --warning: #9B7145;
+  --warning-light: #F9F3EB;
+  --error: #8B4049;
+  --error-light: #F9EBEC;
+  --info: #4A5E6D;
+  --info-light: #EEF2F5;
+  
+  /* Typographie */
+  --font-heading: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-accent: 'Montserrat', 'Futura', sans-serif;
+  
+  /* Tailles de texte */
+  --text-hero: clamp(3rem, 8vw, 6rem);
+  --text-h1: clamp(2.5rem, 6vw, 4.5rem);
+  --text-h2: clamp(2rem, 5vw, 3.5rem);
+  --text-h3: clamp(1.75rem, 4vw, 2.5rem);
+  --text-h4: clamp(1.5rem, 3vw, 2rem);
+  --text-h5: clamp(1.25rem, 2.5vw, 1.5rem);
+  --text-large: 1.25rem;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-tiny: 0.75rem;
+  
+  /* Line heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.8;
+  
+  /* Letter spacing */
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.05em;
+  --letter-spacing-wider: 0.1em;
+  
+  /* Espacements */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+  --spacing-3xl: 6rem;
+  --spacing-4xl: 8rem;
+  
+  /* Ombres */
+  --shadow-sm: 0 2px 8px rgba(26, 26, 26, 0.08);
+  --shadow-md: 0 4px 16px rgba(26, 26, 26, 0.12);
+  --shadow-lg: 0 8px 24px rgba(26, 26, 26, 0.15);
+  --shadow-xl: 0 16px 48px rgba(26, 26, 26, 0.2);
+  --shadow-gold-sm: 0 2px 8px rgba(201, 169, 110, 0.15);
+  --shadow-gold-md: 0 4px 16px rgba(201, 169, 110, 0.2);
+  --shadow-gold-lg: 0 8px 32px rgba(201, 169, 110, 0.25);
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-smooth: 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  --transition-bounce: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Import des polices */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* ==================== BASE STYLES ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--line-height-normal);
+  color: var(--secondary-taupe-dark);
+  background-color: var(--primary-light);
+  overflow-x: hidden;
+}
+
+/* ==================== TYPOGRAPHIE ==================== */
+.heading-hero {
+  font-family: var(--font-heading);
+  font-size: var(--text-hero);
+  font-weight: 300;
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--primary-dark);
+}
+
+.heading-1 {
+  font-family: var(--font-heading);
+  font-size: var(--text-h1);
+  font-weight: 400;
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--primary-dark);
+}
+
+.heading-2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-h2);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--primary-dark);
+}
+
+.heading-3 {
+  font-family: var(--font-accent);
+  font-size: var(--text-h3);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--primary-dark);
+}
+
+.heading-4 {
+  font-family: var(--font-accent);
+  font-size: var(--text-h4);
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.subtitle {
+  font-family: var(--font-accent);
+  font-size: var(--text-small);
+  font-weight: 500;
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  color: var(--primary-gold);
+}
+
+.body-text {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: var(--line-height-normal);
+  color: var(--secondary-taupe-dark);
+}
+
+.text-large {
+  font-size: var(--text-large);
+  line-height: var(--line-height-relaxed);
+}
+
+.text-small {
+  font-size: var(--text-small);
+}
+
+/* ==================== BOUTONS PREMIUM ==================== */
+
+/* Bouton Principal - Learn More Style */
+.btn-primary {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  outline: none;
+  border: 0;
+  vertical-align: middle;
+  text-decoration: none;
+  background: transparent;
+  padding: 0;
+  font-family: var(--font-accent);
+  transition: all var(--transition-smooth);
+  width: 14rem;
+  height: auto;
+}
+
+.btn-primary .circle {
+  transition: all var(--transition-smooth);
+  position: relative;
+  display: block;
+  margin: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--primary-dark);
+  border-radius: 2rem;
+}
+
+.btn-primary .circle .icon {
+  transition: all var(--transition-smooth);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.btn-primary .circle .icon.arrow {
+  left: 0.75rem;
+  width: 1.25rem;
+  height: 0.125rem;
+  background: none;
+}
+
+.btn-primary .circle .icon.arrow::before {
+  position: absolute;
+  content: "";
+  top: -0.29rem;
+  right: 0.0625rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-top: 0.125rem solid var(--primary-gold);
+  border-right: 0.125rem solid var(--primary-gold);
+  transform: rotate(45deg);
+}
+
+.btn-primary .button-text {
+  transition: all var(--transition-smooth);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.85rem 0;
+  margin: 0 0 0 2rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+}
+
+.btn-primary:hover .circle {
+  width: 100%;
+  background: var(--primary-gold-dark);
+}
+
+.btn-primary:hover .circle .icon.arrow {
+  background: var(--primary-dark);
+  transform: translate(1rem, 0);
+}
+
+.btn-primary:hover .button-text {
+  color: var(--pure-white);
+}
+
+/* Bouton Secondaire - Flying Arrow */
+.btn-secondary {
+  font-family: var(--font-accent);
+  font-size: 1rem;
+  background: var(--primary-gold);
+  color: var(--primary-dark);
+  padding: 0.9em 1.4em 0.9em 1.2em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  border: none;
+  border-radius: 50px;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  box-shadow: var(--shadow-gold-sm);
+}
+
+.btn-secondary:hover {
+  background: var(--primary-gold-dark);
+  box-shadow: var(--shadow-gold-lg);
+  transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Bouton Tertiary - Elegant Minimal */
+.btn-tertiary {
+  font-family: var(--font-accent);
+  padding: 1.1rem 2.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  border: 2px solid var(--primary-dark);
+  background-color: transparent;
+  color: var(--primary-dark);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--transition-bounce);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-tertiary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-dark);
+  transition: left var(--transition-bounce);
+  z-index: -1;
+}
+
+.btn-tertiary:hover {
+  color: var(--primary-gold);
+  border-color: var(--primary-dark);
+}
+
+.btn-tertiary:hover::before {
+  left: 0;
+}
+
+.btn-tertiary:active {
+  transform: scale(0.98);
+}
+
+/* Bouton Action - Expandable */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-bounce);
+  box-shadow: var(--shadow-md);
+  background: var(--primary-gold);
+}
+
+.btn-action .sign {
+  width: 100%;
+  transition: all var(--transition-bounce);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-action .sign svg {
+  width: 20px;
+  height: 20px;
+}
+
+.btn-action .sign svg path {
+  fill: var(--primary-dark);
+}
+
+.btn-action .text {
+  position: absolute;
+  right: 0%;
+  width: 0%;
+  opacity: 0;
+  color: var(--primary-dark);
+  font-size: 0.95em;
+  font-weight: 600;
+  font-family: var(--font-accent);
+  letter-spacing: 0.05em;
+  transition: all var(--transition-bounce);
+}
+
+.btn-action:hover {
+  width: 160px;
+  border-radius: 50px;
+  box-shadow: var(--shadow-gold-md);
+}
+
+.btn-action:hover .sign {
+  width: 30%;
+  padding-left: 20px;
+}
+
+.btn-action:hover .text {
+  opacity: 1;
+  width: 70%;
+  padding-right: 15px;
+}
+
+.btn-action:active {
+  transform: scale(0.96);
+}
+
+/* Bouton Ghost - Élégant */
+.btn-ghost {
+  font-family: var(--font-accent);
+  padding: 1rem 2rem;
+  border: 1px solid var(--primary-gold);
+  background: transparent;
+  color: var(--primary-gold);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ghost::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: var(--primary-gold);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-ghost:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-ghost:hover {
+  color: var(--primary-dark);
+  border-color: var(--primary-gold);
+}
+
+.btn-ghost span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==================== LAYOUT ==================== */
+.container-luxury {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-lg);
+  padding-right: var(--spacing-lg);
+}
+
+.section-luxury {
+  padding: var(--spacing-4xl) 0;
+}
+
+.grid-luxury {
+  display: grid;
+  gap: var(--spacing-xl);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* ==================== CARTES ==================== */
+.card-luxury {
+  background: var(--pure-white);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-slow);
+  position: relative;
+}
+
+.card-luxury::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.05) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+}
+
+.card-luxury:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-xl);
+}
+
+.card-luxury:hover::before {
+  opacity: 1;
+}
+
+.card-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.card-luxury:hover .card-image {
+  transform: scale(1.05);
+}
+
+.card-content {
+  padding: var(--spacing-xl);
+}
+
+.card-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: 500;
+  color: var(--primary-dark);
+  margin-bottom: var(--spacing-sm);
+}
+
+.card-text {
+  color: var(--secondary-taupe-dark);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--spacing-md);
+}
+
+/* ==================== OVERLAYS ==================== */
+.overlay-dark {
+  background: linear-gradient(
+    180deg,
+    rgba(26, 26, 26, 0) 0%,
+    rgba(26, 26, 26, 0.4) 50%,
+    rgba(26, 26, 26, 0.8) 100%
+  );
+}
+
+.overlay-gold {
+  background: linear-gradient(
+    135deg,
+    rgba(201, 169, 110, 0.9) 0%,
+    rgba(166, 138, 92, 0.7) 100%
+  );
+}
+
+.overlay-subtle {
+  background: linear-gradient(
+    180deg,
+    rgba(250, 250, 248, 0.95) 0%,
+    rgba(250, 250, 248, 0.85) 100%
+  );
+}
+
+/* ==================== BORDURES ET SÉPARATEURS ==================== */
+.border-luxury {
+  border: 1px solid var(--primary-gold);
+  position: relative;
+}
+
+.border-luxury::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--primary-gold);
+}
+
+.divider-luxury {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--primary-gold) 50%,
+    transparent 100%
+  );
+  margin: var(--spacing-xl) 0;
+}
+
+.divider-vertical {
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--primary-gold) 50%,
+    transparent 100%
+  );
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.animate-fade-in-left {
+  animation: fadeInLeft 0.8s ease-out;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight 0.8s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s ease-out;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (min-width: 768px) {
+  .container-luxury {
+    padding-left: var(--spacing-xl);
+    padding-right: var(--spacing-xl);
+  }
+  
+  .section-luxury {
+    padding: var(--spacing-4xl) 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-luxury {
+    padding-left: var(--spacing-2xl);
+    padding-right: var(--spacing-2xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .heading-hero {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+  
+  .btn-primary {
+    width: 12rem;
+  }
+  
+  .card-luxury {
+    margin-bottom: var(--spacing-lg);
+  }
+}
+
+/* ==================== UTILITAIRES ==================== */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+.mt-2xl { margin-top: var(--spacing-2xl); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+.mb-2xl { margin-bottom: var(--spacing-2xl); }
+
+.py-xl { padding-top: var(--spacing-xl); padding-bottom: var(--spacing-xl); }
+.py-2xl { padding-top: var(--spacing-2xl); padding-bottom: var(--spacing-2xl); }
+.py-3xl { padding-top: var(--spacing-3xl); padding-bottom: var(--spacing-3xl); }
+
+.bg-dark { background-color: var(--primary-dark); }
+.bg-light { background-color: var(--primary-light); }
+.bg-gold { background-color: var(--primary-gold); }
+.bg-white { background-color: var(--pure-white); }
+
+.text-gold { color: var(--primary-gold); }
+.text-dark { color: var(--primary-dark); }
+.text-white { color: var(--pure-white); }

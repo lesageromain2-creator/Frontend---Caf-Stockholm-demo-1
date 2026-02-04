@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-gold: #C9A96E;
+  --primary-gold-light: #D4BC8E;
+  --primary-gold-dark: #A68A5C;
+  --primary-dark: #1A1A1A;
+  --primary-light: #FAFAF8;
+  --secondary-taupe: #8B8680;
+  --secondary-taupe-dark: #5D5A56;
+  --accent-burgundy: #6B2C3E;
+  --transition-smooth: 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+  --transition-base: 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--primary-dark);
+  color: var(--primary-light);
+}
+
+/* Boutons luxe - identité visuelle */
+.btn-luxury-primary {
+  @apply relative inline-flex items-center justify-start font-accent font-semibold uppercase tracking-luxury text-sm;
+  width: 14rem;
+  height: 3.5rem;
+}
+
+.btn-luxury-primary .circle {
+  @apply absolute left-0 top-0 flex h-14 w-14 items-center justify-center rounded-full bg-primary-dark transition-all duration-300;
+}
+
+.btn-luxury-primary .circle .icon-arrow {
+  @apply block h-0.5 w-5;
+  background: linear-gradient(90deg, var(--primary-gold) 60%, transparent 60%);
+}
+
+.btn-luxury-primary .circle .icon-arrow::before {
+  content: '';
+  @apply absolute right-1 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-t-2 border-r-2 border-primary-gold;
+}
+
+.btn-luxury-primary .button-text {
+  @apply absolute left-14 top-1/2 -translate-y-1/2 text-primary-dark;
+}
+
+.btn-luxury-primary:hover .circle {
+  @apply w-full rounded-full bg-primary-gold-dark;
+}
+
+.btn-luxury-primary:hover .button-text {
+  @apply text-white;
+}
+
+.btn-luxury-secondary {
+  @apply inline-flex items-center gap-2 rounded-full bg-primary-gold px-6 py-3.5 font-accent font-medium uppercase tracking-wider text-primary-dark transition-all duration-300;
+  box-shadow: 0 4px 15px rgba(201, 169, 110, 0.2);
+}
+
+.btn-luxury-secondary:hover {
+  @apply -translate-y-0.5 bg-primary-gold-dark;
+  box-shadow: 0 6px 25px rgba(201, 169, 110, 0.35);
+}
+
+.btn-luxury-tertiary {
+  @apply relative inline-flex items-center justify-center overflow-hidden rounded-full border-2 border-primary-dark bg-transparent px-8 py-3.5 font-accent text-sm font-medium uppercase tracking-luxury-wide text-primary-dark transition-all duration-300;
+}
+
+.btn-luxury-tertiary::before {
+  content: '';
+  @apply absolute inset-0 -translate-x-full bg-primary-dark transition-transform duration-300;
+  z-index: -1;
+}
+
+.btn-luxury-tertiary:hover {
+  @apply text-primary-gold;
+}
+
+.btn-luxury-tertiary:hover::before {
+  @apply translate-x-0;
+}
+
+/* Variante claire pour fond sombre */
+.btn-luxury-tertiary-light {
+  @apply relative inline-flex items-center justify-center overflow-hidden rounded-full border-2 border-[#C9A96E] bg-transparent px-8 py-3.5 font-accent text-sm font-medium uppercase tracking-luxury-wide text-[#C9A96E] transition-all duration-300;
+}
+
+.btn-luxury-tertiary-light::before {
+  content: '';
+  @apply absolute inset-0 -translate-x-full bg-[#C9A96E] transition-transform duration-300;
+  z-index: -1;
+}
+
+.btn-luxury-tertiary-light:hover {
+  @apply text-[#1A1A1A];
+}
+
+.btn-luxury-tertiary-light:hover::before {
+  @apply translate-x-0;
+}
+
+/* Divider luxe */
+.divider-luxury {
+  @apply mx-auto my-6 h-px w-20;
+  background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+}
+
+/* Classes utilitaires typographie luxe */
+.heading-hero {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.heading-luxury {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 400;
+}
+
+.subtitle-luxury {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--primary-gold);
+}
+

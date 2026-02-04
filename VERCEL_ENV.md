@@ -6,14 +6,17 @@ Pour que l'app fonctionne en production sur `https://hotel-demo-murex.vercel.app
 
 | Variable | Valeur | Obligatoire |
 |----------|--------|-------------|
-| `NEXT_PUBLIC_API_URL` | **https://votre-backend.onrender.com** (URL du backend déployé sur Render) | Oui |
+| `BACKEND_URL` | **https://votre-backend.onrender.com** (URL du backend déployé sur Render) | Oui |
 | `NEXT_PUBLIC_APP_URL` | `https://hotel-demo-murex.vercel.app` | Oui |
 | `BETTER_AUTH_URL` | `https://hotel-demo-murex.vercel.app` | Oui |
 | `BETTER_AUTH_SECRET` | Générer avec `openssl rand -base64 32` | Oui |
 | `BETTER_AUTH_BACKEND_SECRET` | Même valeur que `JWT_SECRET` du backend | Oui (pour JWT) |
+| `DATABASE_URL` | URL PostgreSQL (Supabase) pour Prisma | Oui (Better Auth) |
 | `GOOGLE_CLIENT_ID` | Votre Client ID Google OAuth | Optionnel |
 | `GOOGLE_CLIENT_SECRET` | Votre Client Secret Google OAuth | Optionnel |
 | `JWT_SECRET` | Même valeur que le backend | Oui (pour backend-token) |
+
+**Note** : `BACKEND_URL` est utilisé côté serveur uniquement (proxy `/api/backend/*`). Le frontend appelle `/api/backend/settings` etc., le proxy transmet au backend. Pas besoin de `NEXT_PUBLIC_API_URL` si vous utilisez le proxy.
 
 ## Erreurs courantes
 

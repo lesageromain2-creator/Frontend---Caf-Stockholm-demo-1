@@ -13,6 +13,7 @@ import Footer from '../../components/Footer';
 import ProjectTimeline from '../../components/ProjectTimeline';
 import AnimeReveal from '../../components/animations/AnimeReveal';
 import { checkAuth, fetchSettings, getProjectFileDownload } from '../../utils/api';
+import { getApiPrefix } from '../../utils/getApiUrl';
 
 const PROJET_IMG = "/image-website/dashboard%20mes%20projets-%20a%20mettre%20dans%20chaque%20projet%20sp%C3%A9cifique.jpg";
 
@@ -48,7 +49,7 @@ export default function ProjectDetailPage() {
       setUser(authData.user);
 
       // Charger les données du projet
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/dashboard/projects/${id}`, {
+      const response = await fetch(`${getApiPrefix()}/dashboard/projects/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
           'Content-Type': 'application/json'

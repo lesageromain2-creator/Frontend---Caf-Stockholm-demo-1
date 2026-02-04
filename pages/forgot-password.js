@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
-import { getApiBaseUrl } from '../utils/getApiUrl';
+import { getApiPrefix } from '../utils/getApiUrl';
 
-const API_URL = getApiBaseUrl();
+const API_URL = getApiPrefix();
 
 export default function ForgotPassword() {
   const router = useRouter();

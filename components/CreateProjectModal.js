@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react';
 import { X, Upload, Calendar, DollarSign, FileText, User, Mail, Phone, Building } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { getApiPrefix } from '../utils/getApiUrl';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = getApiPrefix();
 
 const PROJECT_TYPES = [
   { value: 'vitrine', label: 'Site Vitrine' },

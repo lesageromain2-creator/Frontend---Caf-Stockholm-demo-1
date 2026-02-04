@@ -89,29 +89,29 @@ export default function Header({ settings = {} }) {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-all duration-500 ${
+      className={`fixed inset-x-0 top-0 z-40 overflow-x-hidden transition-all duration-500 ${
         scrolled ? 'bg-[#FAFAF8]/95 backdrop-blur-md shadow-lg py-4' : 'bg-transparent py-6'
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8 lg:px-12">
-        <Link href="/" className="mr-12 flex shrink-0 items-center gap-10">
+      <div className="mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between gap-2 px-4 md:px-6 lg:px-8">
+        <Link href="/" className="-ml-4 mr-8 flex shrink-0 items-center gap-3 md:gap-4 md:-ml-6 md:mr-10 lg:-ml-8 lg:mr-12">
           <div
-            className={`flex h-12 w-12 min-h-[3rem] min-w-[3rem] shrink-0 items-center justify-center rounded-full font-heading text-2xl font-bold transition-colors duration-300 ${
+            className={`flex h-10 w-10 min-h-[2.5rem] min-w-[2.5rem] shrink-0 items-center justify-center rounded-full font-heading text-xl font-bold transition-colors duration-300 ${
               scrolled ? 'bg-[#1A1A1A] text-[#C9A96E]' : 'bg-[#C9A96E] text-[#1A1A1A]'
             }`}
           >
             {siteName.charAt(0)}
           </div>
-          <div className="flex flex-col justify-center space-y-3">
+          <div className="flex flex-col justify-center space-y-0.5">
             <span
-              className={`block font-heading text-base font-semibold tracking-tight md:text-lg ${
+              className={`block font-heading text-sm font-semibold tracking-tight md:text-base ${
                 scrolled ? 'text-[#1A1A1A]' : 'text-white'
               }`}
             >
               {siteName}
             </span>
             <span
-              className={`block text-[10px] font-accent font-medium uppercase tracking-[0.15em] ${
+              className={`block text-[9px] font-accent font-medium uppercase tracking-[0.12em] ${
                 scrolled ? 'text-[#8B8680]' : 'text-white/80'
               }`}
             >
@@ -120,7 +120,7 @@ export default function Header({ settings = {} }) {
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-8 font-accent text-sm font-medium uppercase tracking-[0.1em] lg:flex">
+        <nav className="hidden shrink-0 items-center gap-4 xl:gap-6 font-accent text-xs lg:text-sm font-medium uppercase tracking-[0.08em] lg:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -134,31 +134,31 @@ export default function Header({ settings = {} }) {
           ))}
           <Link
             href="/reservation-chambre"
-            className="rounded-full bg-[#C9A96E] px-5 py-2.5 font-semibold text-[#1A1A1A] transition-all duration-300 hover:bg-[#A68A5C] hover:-translate-y-0.5"
+            className="shrink-0 rounded-full bg-[#C9A96E] px-4 py-2 text-sm font-semibold text-[#1A1A1A] transition-all duration-300 hover:bg-[#A68A5C] hover:-translate-y-0.5"
           >
             Réserver
           </Link>
-          <div className="ml-2 flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1.5">
             {isLoggedIn ? (
               <>
                 {userRole === 'admin' && (
                   <Link
                     href="/admin"
-                    className="rounded-full border border-[#6B2C3E]/50 bg-[#6B2C3E]/10 px-3 py-1.5 text-xs font-semibold text-[#6B2C3E]"
+                    className="shrink-0 rounded-full border border-[#6B2C3E]/50 bg-[#6B2C3E]/10 px-2.5 py-1 text-[10px] font-semibold text-[#6B2C3E]"
                   >
                     Admin
                   </Link>
                 )}
                 <Link
                   href="/dashboard"
-                  className="rounded-full border border-[#1A1A1A]/20 bg-[#1A1A1A]/5 px-3 py-1.5 text-xs font-semibold text-[#1A1A1A] hover:bg-[#1A1A1A]/10"
+                  className="shrink-0 rounded-full border border-[#1A1A1A]/20 bg-[#1A1A1A]/5 px-2.5 py-1 text-[10px] font-semibold text-[#1A1A1A] hover:bg-[#1A1A1A]/10"
                 >
                   Mon compte
                 </Link>
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="rounded-full bg-[#1A1A1A]/20 px-3 py-1.5 text-xs font-semibold hover:bg-[#1A1A1A]/30"
+                  className="shrink-0 rounded-full bg-[#1A1A1A]/20 px-2.5 py-1 text-[10px] font-semibold hover:bg-[#1A1A1A]/30"
                 >
                   Déconnexion
                 </button>
@@ -166,7 +166,7 @@ export default function Header({ settings = {} }) {
             ) : (
               <Link
                 href="/login"
-                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                className={`shrink-0 rounded-full border px-2.5 py-1 text-[10px] font-semibold transition-colors ${
                   scrolled
                     ? 'border-[#1A1A1A]/20 text-[#1A1A1A] hover:bg-[#1A1A1A]/5'
                     : 'border-white/30 text-white hover:bg-white/10'

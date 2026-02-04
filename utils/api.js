@@ -1,8 +1,8 @@
 // frontend/utils/api.js - VERSION JWT AVEC LOGS AMÉLIORÉS
 
-import { getApiBaseUrl } from './getApiUrl';
+import { getApiPrefix } from './getApiUrl';
 
-const API_URL = getApiBaseUrl();
+const API_URL = getApiPrefix();
 
 if (typeof window === 'undefined') {
   console.log('🔧 Configuration API:', API_URL);

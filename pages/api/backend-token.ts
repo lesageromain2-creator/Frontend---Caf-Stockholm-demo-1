@@ -5,10 +5,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { auth } from "../../lib/auth";
 
-// Base URL backend (sans /api) ex: http://localhost:5000
+// Base URL backend - BACKEND_URL en priorité (server-side, pas exposé)
 const BACKEND_BASE =
-  (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/api\/?$/, "") ||
-  "http://localhost:5000";
+  (process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(
+    /\/api\/?$/,
+    ""
+  ) || "http://localhost:5000";
 const BETTER_AUTH_BACKEND_SECRET =
   process.env.BETTER_AUTH_BACKEND_SECRET || process.env.JWT_SECRET;
 

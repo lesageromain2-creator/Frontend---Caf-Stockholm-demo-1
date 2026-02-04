@@ -10,6 +10,7 @@ import {
   fetchFavorites, 
   checkAuth 
 } from '../utils/api';
+import { getApiPrefix } from '../utils/getApiUrl';
 
 export default function Categories() {
   const router = useRouter();
@@ -87,8 +88,7 @@ export default function Categories() {
   // ============================================
   const loadCategoriesAndDishes = async () => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-      
+      const API_URL = getApiPrefix();
       // Récupérer les catégories
       const categoriesRes = await fetch(`${API_URL}/categories`, {
         credentials: 'include'

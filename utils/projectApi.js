@@ -1,13 +1,13 @@
-// frontend/utils/api.js - Ajouter les fonctions pour les projets
+import { getApiPrefix } from './getApiUrl';
 
-// ... fonctions existantes ...
+const API_URL = getApiPrefix();
 
 // ============================================
 // Projets
 // ============================================
 
 export const createProject = async (projectData) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('authToken') || localStorage.getItem('token');
   const response = await fetch(`${API_URL}/admin/projects`, {
     method: 'POST',
     headers: {
@@ -26,7 +26,7 @@ export const createProject = async (projectData) => {
 };
 
 export const getProjects = async (params = {}) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('authToken') || localStorage.getItem('token');
   const queryString = new URLSearchParams(params).toString();
   
   const response = await fetch(`${API_URL}/admin/projects?${queryString}`, {
@@ -43,7 +43,7 @@ export const getProjects = async (params = {}) => {
 };
 
 export const getProject = async (id) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('authToken') || localStorage.getItem('token');
   
   const response = await fetch(`${API_URL}/admin/projects/${id}`, {
     headers: {
@@ -63,7 +63,7 @@ export const getProject = async (id) => {
 // ============================================
 
 export const getUsers = async (role = null) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('authToken') || localStorage.getItem('token');
   const queryString = role ? `?role=${role}` : '';
   
   const response = await fetch(`${API_URL}/admin/users${queryString}`, {

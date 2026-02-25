@@ -1,15 +1,23 @@
-// frontend/components/admin/AdminHeader.js
+// frontend/components/admin/AdminHeader.js - Kafé Stockholm Admin
 import { useState, useEffect } from 'react';
-import { Search, Bell, User, ChevronDown } from 'lucide-react';
-import { adminSearch } from '../../utils/api';
+import Link from 'next/link';
+import { Bell, User, ChevronDown, Settings, LogOut } from 'lucide-react';
+import { useRouter } from 'next/router';
+import { logout } from '../../utils/api';
+import { toast } from 'react-toastify';
+import { SITE } from '../../lib/site-config';
 
-export default function AdminHeader({ user, onSearch }) {
-  const [searchQuery, setSearchQuery] = useState('');
+const CLIENT_NAV = [
+  { label: 'Accueil', href: '/' },
+  ...SITE.navNous,
+  { label: 'La carte', href: '/carte' },
+];
+
+export default function AdminHeader({ user }) {
+  const router = useRouter();
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
 
   useEffect(() => {
     // Polling pour notifications (toutes les 30s)
@@ -20,52 +28,37 @@ export default function AdminHeader({ user, onSearch }) {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSearch = async (query) => {
-    setSearchQuery(query);
-    
-    if (query.length < 2) {
-      setSearchResults([]);
-      setShowSearchResults(false);
-      return;
-    }
-
-    try {
-      const results = await adminSearch(query);
-      setSearchResults(results);
-      setShowSearchResults(true);
-      if (onSearch) onSearch(results);
-    } catch (error) {
-      console.error('Erreur recherche:', error);
-    }
-  };
-
   const getInitials = (firstname, lastname) => {
     return `${firstname?.charAt(0) || ''}${lastname?.charAt(0) || ''}`.toUpperCase();
+  };
+
+  const handleLogout = async () => {
+    try {
+      toast.info('Déconnexion...');
+      await logout();
+    } catch (error) {
+      console.error('Erreur déconnexion:', error);
+      toast.error('Erreur lors de la déconnexion');
+    }
   };
 
   return (
     <header className="admin-header">
       <div className="header-content">
-        <div className="search-container">
-          <Search size={20} className="search-icon" />
-          <input
-            type="text"
-            placeholder="Rechercher projets, clients, messages..."
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="search-input"
-          />
-          {showSearchResults && searchResults.length > 0 && (
-            <div className="search-results">
-              {searchResults.map((result, idx) => (
-                <div key={idx} className="search-result-item">
-                  <span className="result-type">{result.type}</span>
-                  <span className="result-title">{result.title}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <nav className="client-nav" aria-label="Pages côté client">
+          <span className="client-nav-label">Voir le site :</span>
+          {CLIENT_NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="client-nav-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
 
         <div className="header-actions">
           <div className="notifications-container">
@@ -123,16 +116,17 @@ export default function AdminHeader({ user, onSearch }) {
 
             {showProfileMenu && (
               <div className="profile-dropdown">
-                <div className="dropdown-item">
+                <div className="dropdown-item" onClick={() => router.push('/admin/profile')}>
                   <User size={16} />
                   <span>Mon profil</span>
                 </div>
-                <div className="dropdown-item">
+                <div className="dropdown-item" onClick={() => router.push('/admin/settings')}>
                   <Settings size={16} />
                   <span>Paramètres</span>
                 </div>
                 <div className="dropdown-divider"></div>
-                <div className="dropdown-item danger">
+                <div className="dropdown-item danger" onClick={handleLogout}>
+                  <LogOut size={16} />
                   <span>Déconnexion</span>
                 </div>
               </div>
@@ -148,9 +142,9 @@ export default function AdminHeader({ user, onSearch }) {
           left: 280px;
           right: 0;
           height: 80px;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(20px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          background: #f8fafc;
+          border-bottom: 1px solid #e2e8f0;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
           z-index: 90;
           padding: 0 32px;
         }
@@ -163,82 +157,38 @@ export default function AdminHeader({ user, onSearch }) {
           gap: 24px;
         }
 
-        .search-container {
-          flex: 1;
-          max-width: 500px;
-          position: relative;
-        }
-
-        .search-input {
-          width: 100%;
-          padding: 12px 16px 12px 48px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          color: white;
-          font-size: 14px;
-          transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-          outline: none;
-          border-color: #0066FF;
-          background: rgba(255, 255, 255, 0.08);
-        }
-
-        .search-input::placeholder {
-          color: rgba(255, 255, 255, 0.5);
-        }
-
-        .search-icon {
-          position: absolute;
-          left: 16px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: rgba(255, 255, 255, 0.5);
-        }
-
-        .search-results {
-          position: absolute;
-          top: calc(100% + 8px);
-          left: 0;
-          right: 0;
-          background: rgba(10, 14, 39, 0.98);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 12px;
-          padding: 8px;
-          max-height: 300px;
-          overflow-y: auto;
-          z-index: 1000;
-        }
-
-        .search-result-item {
-          padding: 12px;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: background 0.2s;
+        .quick-access,
+        .client-nav {
           display: flex;
-          gap: 12px;
           align-items: center;
+          gap: 14px;
+          flex-wrap: wrap;
         }
 
-        .search-result-item:hover {
-          background: rgba(255, 255, 255, 0.05);
+        .client-nav-label {
+          font-size: 12px;
+          color: #64748b;
+          margin-right: 6px;
+          white-space: nowrap;
+          font-weight: 500;
         }
 
-        .result-type {
-          padding: 4px 8px;
-          background: rgba(0, 102, 255, 0.2);
-          color: #00D9FF;
-          border-radius: 6px;
-          font-size: 11px;
-          font-weight: 700;
-          text-transform: uppercase;
-        }
-
-        .result-title {
-          color: white;
+        .client-nav-link {
+          padding: 10px 16px;
           font-size: 14px;
+          font-weight: 500;
+          color: #334155;
+          text-decoration: none;
+          border-radius: 8px;
+          white-space: nowrap;
+          transition: all 0.3s ease-out;
+          letter-spacing: 0.02em;
+        }
+
+        .client-nav-link:hover {
+          color: #1A4A8A;
+          opacity: 1;
+          transform: scale(1.05) translateY(-2px);
         }
 
         .header-actions {
@@ -254,24 +204,24 @@ export default function AdminHeader({ user, onSearch }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: #f9fafb;
+          border: 1px solid #e5e7eb;
           border-radius: 12px;
-          color: rgba(255, 255, 255, 0.7);
+          color: #4b5563;
           cursor: pointer;
           transition: all 0.3s ease;
         }
 
         .icon-button:hover {
-          background: rgba(255, 255, 255, 0.1);
-          color: white;
+          background: #f3f4f6;
+          color: #1f2937;
         }
 
         .notification-badge {
           position: absolute;
           top: -4px;
           right: -4px;
-          background: #FF6B35;
+          background: #DC2626;
           color: white;
           border-radius: 10px;
           padding: 2px 6px;
@@ -290,21 +240,21 @@ export default function AdminHeader({ user, onSearch }) {
           top: calc(100% + 12px);
           right: 0;
           width: 360px;
-          background: rgba(10, 14, 39, 0.98);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: #ffffff;
+          border: 1px solid #e5e7eb;
           border-radius: 16px;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
           z-index: 1000;
           overflow: hidden;
         }
 
         .dropdown-header {
           padding: 20px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          border-bottom: 1px solid #e5e7eb;
         }
 
         .dropdown-header h3 {
-          color: white;
+          color: #1f2937;
           font-size: 16px;
           font-weight: 700;
         }
@@ -312,33 +262,33 @@ export default function AdminHeader({ user, onSearch }) {
         .empty-notifications {
           padding: 40px 20px;
           text-align: center;
-          color: rgba(255, 255, 255, 0.5);
-        }
-
-        .notifications-list {
-          max-height: 400px;
-          overflow-y: auto;
+          color: #6b7280;
         }
 
         .notification-item {
           padding: 16px 20px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          border-bottom: 1px solid #f3f4f6;
           transition: background 0.2s;
         }
 
         .notification-item:hover {
-          background: rgba(255, 255, 255, 0.05);
+          background: #f9fafb;
         }
 
         .notification-text {
-          color: white;
+          color: #1f2937;
           font-size: 14px;
           margin-bottom: 4px;
         }
 
         .notification-time {
-          color: rgba(255, 255, 255, 0.5);
+          color: #6b7280;
           font-size: 12px;
+        }
+
+        .notifications-list {
+          max-height: 400px;
+          overflow-y: auto;
         }
 
         .profile-container {
@@ -350,28 +300,28 @@ export default function AdminHeader({ user, onSearch }) {
           align-items: center;
           gap: 12px;
           padding: 8px 12px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: #f9fafb;
+          border: 1px solid #e5e7eb;
           border-radius: 12px;
           cursor: pointer;
           transition: all 0.3s ease;
         }
 
         .profile-button:hover {
-          background: rgba(255, 255, 255, 0.1);
+          background: #f3f4f6;
         }
 
         .profile-avatar {
           width: 36px;
           height: 36px;
           border-radius: 10px;
-          background: linear-gradient(135deg, #0066FF, #00D9FF);
+          background: linear-gradient(135deg, #1A4A8A, #2E6DB4);
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: 700;
           font-size: 14px;
-          color: white;
+          color: #fff;
           flex-shrink: 0;
         }
 
@@ -390,13 +340,13 @@ export default function AdminHeader({ user, onSearch }) {
         }
 
         .profile-name {
-          color: white;
+          color: #1f2937;
           font-size: 14px;
           font-weight: 600;
         }
 
         .profile-role {
-          color: rgba(255, 255, 255, 0.5);
+          color: #6b7280;
           font-size: 12px;
         }
 
@@ -405,17 +355,17 @@ export default function AdminHeader({ user, onSearch }) {
           top: calc(100% + 12px);
           right: 0;
           width: 200px;
-          background: rgba(10, 14, 39, 0.98);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: #ffffff;
+          border: 1px solid #e5e7eb;
           border-radius: 12px;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
           z-index: 1000;
           overflow: hidden;
         }
 
         .dropdown-item {
           padding: 12px 16px;
-          color: white;
+          color: #1f2937;
           font-size: 14px;
           cursor: pointer;
           transition: background 0.2s;
@@ -425,16 +375,16 @@ export default function AdminHeader({ user, onSearch }) {
         }
 
         .dropdown-item:hover {
-          background: rgba(255, 255, 255, 0.05);
+          background: #f9fafb;
         }
 
         .dropdown-item.danger {
-          color: #FF6B35;
+          color: #B45309;
         }
 
         .dropdown-divider {
           height: 1px;
-          background: rgba(255, 255, 255, 0.1);
+          background: #e5e7eb;
           margin: 4px 0;
         }
 

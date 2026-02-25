@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'NotoSans-Condensed';
+    font-display: swap;
+    font-weight: normal;
+    font-style: normal;
+    src: local('NotoSans-Condensed'),
+    url(/fonts/NotoSans-Condensed.ttf) format('truetype');
+}
+#content .wrapper_title .title_container {
+    /*font: 400 20px 'NotoSans-Condensed',"Helvetica Neue","Arial",sans-serif;*/
+    font: 400 20px NotoSans-Condensed,"Helvetica Neue",Arial,sans-serif;
+}

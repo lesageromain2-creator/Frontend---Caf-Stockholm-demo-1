@@ -5,9 +5,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Head from 'head';
+import Head from 'next/head';
+import Link from 'next/link';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { getProductImageUrl } from '@/utils/productImageUrl';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -19,7 +21,7 @@ interface OrderItem {
   price: number;
   quantity: number;
   subtotal: number;
-  image_url: string;
+  image_url?: string | null;
 }
 
 interface Order {
@@ -52,6 +54,7 @@ export default function AdminOrderDetailPage() {
   
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [adminNote, setAdminNote] = useState('');
   const [trackingNumber, setTrackingNumber] = useState('');
 
@@ -63,72 +66,28 @@ export default function AdminOrderDetailPage() {
 
   const fetchOrder = async () => {
     setLoading(true);
+    setNotFound(false);
     try {
-      // Mock data détaillée
-      const mockOrder: Order = {
-        id: id as string,
-        order_number: 'ORD-20250209-0001',
-        guest_email: 'client@example.com',
-        billing_address: {
-          firstName: 'Jean',
-          lastName: 'Dupont',
-          addressLine1: '123 Rue de la Paix',
-          city: 'Paris',
-          postalCode: '75001',
-          country: 'FR',
-          phone: '+33 6 12 34 56 78',
-        },
-        shipping_address: {
-          firstName: 'Jean',
-          lastName: 'Dupont',
-          addressLine1: '123 Rue de la Paix',
-          city: 'Paris',
-          postalCode: '75001',
-          country: 'FR',
-          phone: '+33 6 12 34 56 78',
-        },
-        subtotal: 149.99,
-        shipping_cost: 5.99,
-        tax_amount: 31.20,
-        discount_amount: 0,
-        total_amount: 187.18,
-        status: 'processing',
-        payment_status: 'paid',
-        payment_method: 'stripe',
-        shipping_method: 'standard',
-        created_at: new Date().toISOString(),
-        items: [
-          {
-            id: '1',
-            product_name: 'Smartphone XYZ',
-            sku: 'PHONE-001',
-            price: 149.99,
-            quantity: 1,
-            subtotal: 149.99,
-            image_url: '/placeholder.png',
-          },
-        ],
-        statusHistory: [
-          {
-            from_status: 'pending',
-            to_status: 'processing',
-            comment: 'Paiement confirmé',
-            created_at: new Date().toISOString(),
-          },
-          {
-            to_status: 'pending',
-            comment: 'Commande créée',
-            created_at: new Date(Date.now() - 3600000).toISOString(),
-          },
-        ],
-      };
-
-      setOrder(mockOrder);
-      setAdminNote(mockOrder.admin_note || '');
-      setTrackingNumber(mockOrder.tracking_number || '');
-    } catch (error) {
-      console.error('Error fetching order:', error);
-      toast.error('Erreur lors du chargement');
+      const res = await axios.get(
+        `${API_URL}/ecommerce/orders/admin/by-id/${encodeURIComponent(id as string)}`,
+        {
+          headers: typeof window !== 'undefined' && localStorage.getItem('token')
+            ? { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            : {},
+        }
+      );
+      if (res.data.success && res.data.order) {
+        const o = res.data.order;
+        setOrder(o);
+        setAdminNote(o.admin_note || '');
+        setTrackingNumber(o.tracking_number || '');
+      } else {
+        setNotFound(true);
+      }
+    } catch (error: any) {
+      if (error.response?.status === 404) setNotFound(true);
+      else toast.error(error.response?.data?.message || 'Erreur lors du chargement');
+      setOrder(null);
     } finally {
       setLoading(false);
     }
@@ -142,9 +101,10 @@ export default function AdminOrderDetailPage() {
         `${API_URL}/ecommerce/orders/${order.id}/status`,
         { status: newStatus },
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
+          headers:
+            typeof window !== 'undefined' && localStorage.getItem('token')
+              ? { Authorization: `Bearer ${localStorage.getItem('token')}` }
+              : {},
         }
       );
 
@@ -155,7 +115,7 @@ export default function AdminOrderDetailPage() {
     }
   };
 
-  if (loading || !order) {
+  if (loading && !order && !notFound) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -163,13 +123,31 @@ export default function AdminOrderDetailPage() {
     );
   }
 
+  if (notFound) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Commande introuvable.</p>
+          <Link href="/admin/ecommerce/orders" className="text-blue-600 hover:underline">
+            Retour aux commandes
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!order) return null;
+
+  const billing = (order.billing_address || {}) as Record<string, string>;
+  const shipping = (order.shipping_address || {}) as Record<string, string>;
+
   return (
     <>
       <Head>
         <title>Commande {order.order_number} | Admin</title>
       </Head>
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
@@ -210,12 +188,22 @@ export default function AdminOrderDetailPage() {
                 <h2 className="text-xl font-bold mb-4">Produits commandés</h2>
                 
                 <div className="space-y-4">
-                  {order.items.map((item) => (
+                  {(order.items || []).map((item) => (
                     <div key={item.id} className="flex gap-4 pb-4 border-b last:border-0">
                       <img
-                        src={item.image_url || '/placeholder.png'}
+                        src={
+                          getProductImageUrl(item.image_url) ||
+                          'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><rect fill="#e5e7eb" width="80" height="80"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-size="28" font-family="sans-serif">' + (item.product_name.charAt(0) || '?') + '</text></svg>')
+                        }
                         alt={item.product_name}
-                        className="w-20 h-20 object-cover rounded"
+                        className="w-20 h-20 object-cover rounded-lg border border-gray-200 bg-gray-100 flex-shrink-0"
+                        onError={(e) => {
+                          const el = e.target as HTMLImageElement;
+                          if (!el.dataset.fallback) {
+                            el.dataset.fallback = '1';
+                            el.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><rect fill="#e5e7eb" width="80" height="80"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-size="28" font-family="sans-serif">' + (item.product_name.charAt(0) || '?') + '</text></svg>');
+                          }
+                        }}
                       />
                       <div className="flex-1">
                         <h3 className="font-medium">{item.product_name}</h3>
@@ -224,8 +212,8 @@ export default function AdminOrderDetailPage() {
                         )}
                         <p className="text-xs text-gray-400">SKU: {item.sku}</p>
                         <div className="mt-2 flex items-center gap-4 text-sm">
-                          <span>{item.price.toFixed(2)}€ x {item.quantity}</span>
-                          <span className="font-bold">{item.subtotal.toFixed(2)}€</span>
+                          <span>{Number(item.price).toFixed(2)} € x {item.quantity}</span>
+                          <span className="font-bold">{Number(item.subtotal).toFixed(2)} €</span>
                         </div>
                       </div>
                     </div>
@@ -236,29 +224,29 @@ export default function AdminOrderDetailPage() {
                 <div className="mt-6 pt-6 border-t space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Sous-total</span>
-                    <span className="font-medium">{order.subtotal.toFixed(2)}€</span>
+                    <span className="font-medium">{Number(order.subtotal).toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Livraison</span>
-                    <span className="font-medium">{order.shipping_cost.toFixed(2)}€</span>
+                    <span className="font-medium">{Number(order.shipping_cost || 0).toFixed(2)} €</span>
                   </div>
-                  {order.discount_amount > 0 && (
+                  {Number(order.discount_amount || 0) > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">
                         Réduction {order.coupon_code && `(${order.coupon_code})`}
                       </span>
                       <span className="font-medium text-green-600">
-                        -{order.discount_amount.toFixed(2)}€
+                        -{Number(order.discount_amount).toFixed(2)} €
                       </span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">TVA (20%)</span>
-                    <span className="font-medium">{order.tax_amount.toFixed(2)}€</span>
+                    <span className="text-gray-600">TVA</span>
+                    <span className="font-medium">{Number(order.tax_amount || 0).toFixed(2)} €</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold pt-2 border-t">
                     <span>Total</span>
-                    <span>{order.total_amount.toFixed(2)}€</span>
+                    <span>{Number(order.total_amount).toFixed(2)} €</span>
                   </div>
                 </div>
               </div>
@@ -269,17 +257,17 @@ export default function AdminOrderDetailPage() {
                   <h3 className="font-bold mb-3">Adresse de facturation</h3>
                   <div className="text-sm space-y-1">
                     <p className="font-medium">
-                      {order.billing_address.firstName} {order.billing_address.lastName}
+                      {billing.firstName || billing.firstname} {billing.lastName || billing.lastname}
                     </p>
-                    <p>{order.billing_address.addressLine1}</p>
-                    {order.billing_address.addressLine2 && (
-                      <p>{order.billing_address.addressLine2}</p>
+                    <p>{billing.addressLine1 || billing.address_line1}</p>
+                    {(billing.addressLine2 || billing.address_line2) && (
+                      <p>{billing.addressLine2 || billing.address_line2}</p>
                     )}
                     <p>
-                      {order.billing_address.postalCode} {order.billing_address.city}
+                      {billing.postalCode || billing.postal_code} {billing.city}
                     </p>
-                    <p>{order.billing_address.country}</p>
-                    <p className="text-gray-600">{order.billing_address.phone}</p>
+                    <p>{billing.country}</p>
+                    {billing.phone && <p className="text-gray-600">{billing.phone}</p>}
                   </div>
                 </div>
 
@@ -287,17 +275,17 @@ export default function AdminOrderDetailPage() {
                   <h3 className="font-bold mb-3">Adresse de livraison</h3>
                   <div className="text-sm space-y-1">
                     <p className="font-medium">
-                      {order.shipping_address.firstName} {order.shipping_address.lastName}
+                      {shipping.firstName || shipping.firstname} {shipping.lastName || shipping.lastname}
                     </p>
-                    <p>{order.shipping_address.addressLine1}</p>
-                    {order.shipping_address.addressLine2 && (
-                      <p>{order.shipping_address.addressLine2}</p>
+                    <p>{shipping.addressLine1 || shipping.address_line1}</p>
+                    {(shipping.addressLine2 || shipping.address_line2) && (
+                      <p>{shipping.addressLine2 || shipping.address_line2}</p>
                     )}
                     <p>
-                      {order.shipping_address.postalCode} {order.shipping_address.city}
+                      {shipping.postalCode || shipping.postal_code} {shipping.city}
                     </p>
-                    <p>{order.shipping_address.country}</p>
-                    <p className="text-gray-600">{order.shipping_address.phone}</p>
+                    <p>{shipping.country}</p>
+                    {shipping.phone && <p className="text-gray-600">{shipping.phone}</p>}
                   </div>
                 </div>
               </div>
@@ -387,11 +375,11 @@ export default function AdminOrderDetailPage() {
                 <div className="space-y-3 text-sm">
                   <div>
                     <span className="text-gray-600">Email</span>
-                    <p className="font-medium">{order.guest_email}</p>
+                    <p className="font-medium">{order.guest_email || '—'}</p>
                   </div>
                   <div>
                     <span className="text-gray-600">Téléphone</span>
-                    <p className="font-medium">{order.billing_address.phone}</p>
+                    <p className="font-medium">{billing.phone || '—'}</p>
                   </div>
                   {order.customer_note && (
                     <div>
@@ -407,10 +395,10 @@ export default function AdminOrderDetailPage() {
                 <h3 className="font-bold mb-4">Historique</h3>
                 
                 <div className="space-y-4">
-                  {order.statusHistory.map((entry, index) => (
+                  {(order.statusHistory || []).map((entry, index) => (
                     <div key={index} className="relative pl-6 pb-4 last:pb-0">
                       <div className="absolute left-0 top-1 w-3 h-3 bg-blue-600 rounded-full"></div>
-                      {index < order.statusHistory.length - 1 && (
+                      {index < (order.statusHistory?.length ?? 0) - 1 && (
                         <div className="absolute left-1.5 top-4 w-0.5 h-full bg-gray-200"></div>
                       )}
                       <div className="text-sm">

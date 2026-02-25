@@ -1,10 +1,28 @@
 /** @type {import('next').NextConfig} */
+
+// Hostname de l'API pour autoriser les images uploadées (next/image)
+function getApiImageRemotePatterns() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  try {
+    const u = new URL(apiUrl);
+    const protocol = u.protocol.replace(':', '');
+    const patterns = [
+      { protocol, hostname: u.hostname, pathname: '/**' },
+    ];
+    if (u.port) patterns[0].port = u.port;
+    return patterns;
+  } catch {
+    return [];
+  }
+}
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/**' },
       { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
+      ...getApiImageRemotePatterns(),
     ],
     formats: ['image/avif', 'image/webp'],
   },
@@ -68,6 +86,9 @@ const nextConfig = {
         permanent: false,
       },
       { source: '/accueil-hotel', destination: '/', permanent: true },
+      // Kafé Stockholm : anciennes routes e-commerce → café
+      { source: '/products', destination: '/carte', permanent: false },
+      { source: '/products/:path*', destination: '/carte/:path*', permanent: false },
     ];
   },
 }

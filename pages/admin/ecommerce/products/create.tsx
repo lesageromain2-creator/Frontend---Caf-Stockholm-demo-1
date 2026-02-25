@@ -24,6 +24,7 @@ interface Brand {
 export default function CreateProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
 
@@ -47,6 +48,7 @@ export default function CreateProductPage() {
     metaTitle: '',
     metaDescription: '',
     tags: '',
+    featuredImage: '',
   });
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function CreateProductPage() {
   }, []);
 
   useEffect(() => {
-    // Auto-génération du slug
+    // Auto-génération du slug à partir du nom
     if (formData.name && !formData.slug) {
       const slug = formData.name
         .toLowerCase()
@@ -66,6 +68,14 @@ export default function CreateProductPage() {
       setFormData((prev) => ({ ...prev, slug }));
     }
   }, [formData.name]);
+
+  useEffect(() => {
+    // Auto-génération du SKU à partir du slug (café : pas besoin de saisir le SKU)
+    if (formData.slug && !formData.sku) {
+      const sku = formData.slug.toUpperCase().replace(/-/g, '_').slice(0, 50);
+      setFormData((prev) => ({ ...prev, sku }));
+    }
+  }, [formData.slug]);
 
   const fetchCategories = async () => {
     try {
@@ -94,6 +104,41 @@ export default function CreateProductPage() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('Veuillez sélectionner une image (JPEG, PNG, WebP ou GIF).');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image trop volumineuse (max 5 Mo).');
+      return;
+    }
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const response = await axios.post(`${API_URL}/upload/product-image`, formData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (response.data?.success && response.data?.url) {
+        setFormData((prev) => ({ ...prev, featuredImage: response.data.url }));
+        toast.success('Image envoyée.');
+      } else {
+        toast.error(response.data?.message || 'Échec de l\'upload.');
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Erreur lors de l\'upload.');
+    } finally {
+      setUploadingImage(false);
+      e.target.value = '';
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
@@ -110,8 +155,15 @@ export default function CreateProductPage() {
     setLoading(true);
 
     try {
+      const sku = (formData.sku || formData.slug || formData.name)
+        .toString()
+        .trim()
+        .toUpperCase()
+        .replace(/\s+/g, '_')
+        .replace(/[^A-Z0-9_-]/gi, '')
+        .slice(0, 100) || `PROD-${Date.now()}`;
       const payload = {
-        sku: formData.sku,
+        sku,
         name: formData.name,
         slug: formData.slug,
         description: formData.description || undefined,
@@ -130,8 +182,8 @@ export default function CreateProductPage() {
         allowBackorder: formData.allowBackorder,
         metaTitle: formData.metaTitle || undefined,
         metaDescription: formData.metaDescription || undefined,
-        images: [],
-        featuredImage: undefined,
+        images: formData.featuredImage?.trim() ? [formData.featuredImage.trim()] : [],
+        featuredImage: formData.featuredImage?.trim() || undefined,
       };
 
       const response = await axios.post(`${API_URL}/products`, payload, {
@@ -158,7 +210,7 @@ export default function CreateProductPage() {
         <title>Créer un produit | Admin</title>
       </Head>
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="mb-8">
@@ -216,6 +268,48 @@ export default function CreateProductPage() {
 
                     <div>
                       <label className="block text-sm font-medium mb-1">
+                        Image du produit
+                      </label>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <label className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 text-sm">
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp,image/gif"
+                              onChange={handleImageUpload}
+                              disabled={uploadingImage}
+                              className="sr-only"
+                            />
+                            {uploadingImage ? 'Envoi…' : 'Choisir un fichier'}
+                          </label>
+                          <span className="text-xs text-gray-500">ou coller une URL ci-dessous</span>
+                        </div>
+                        <input
+                          type="url"
+                          name="featuredImage"
+                          value={formData.featuredImage}
+                          onChange={handleChange}
+                          placeholder="https://exemple.com/image.jpg"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      {formData.featuredImage && (
+                        <div className="mt-2">
+                          <p className="text-xs text-gray-500 mb-1">Aperçu :</p>
+                          <img
+                            src={formData.featuredImage}
+                            alt="Aperçu"
+                            className="h-24 w-24 object-cover rounded-lg border border-gray-200"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
                         Description courte
                       </label>
                       <textarea
@@ -253,14 +347,14 @@ export default function CreateProductPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">
-                        SKU *
+                        SKU <span className="text-gray-400 font-normal">(optionnel, généré depuis le slug)</span>
                       </label>
                       <input
                         type="text"
                         name="sku"
                         value={formData.sku}
                         onChange={handleChange}
-                        required
+                        placeholder="Laissez vide pour générer automatiquement"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                       />
                     </div>

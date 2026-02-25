@@ -2,36 +2,44 @@
 import { useRouter } from 'next/router';
 import { 
   LayoutDashboard, 
-  FolderOpen, 
-  Calendar, 
-  MessageSquare, 
-  MessagesSquare,
+  Package, 
+  ShoppingCart, 
+  Warehouse, 
+  DollarSign, 
+  BarChart3,
   Users, 
-  LogOut,
-  Bed,
-  UtensilsCrossed
+  Calendar,
+  MessageSquare,
+  Tag,
+  Star,
+  FileText,
+  Settings,
+  LogOut
 } from 'lucide-react';
 
 export default function AdminSidebar({ activeSection, onNavigate, notifications = {} }) {
   const router = useRouter();
 
   const menuItems = [
-    { id: 'overview', label: 'Vue d\'ensemble', icon: LayoutDashboard, path: '/admin' },
-    { id: 'reservations', label: 'Réservations', icon: Calendar, path: '/admin/reservations', badge: notifications.reservations },
-    { id: 'chat', label: 'Chat clients', icon: MessagesSquare, path: '/admin/chat', badge: notifications.chat },
-    { id: 'users', label: 'Utilisateurs', icon: Users, path: '/admin/users' },
-    { id: 'rooms', label: 'Chambres', icon: Bed, path: '/admin/rooms' },
-    { id: 'menus', label: 'Menus gastronomiques', icon: UtensilsCrossed, path: '/admin/menus' },
-    { id: 'messages', label: 'Contact', icon: MessageSquare, path: '/admin/messages', badge: notifications.messages },
-    { id: 'clients', label: 'Clients', icon: Users, path: '/admin/clients', badge: notifications.clients },
-    { id: 'projects', label: 'Projets', icon: FolderOpen, path: '/admin/projects', badge: notifications.projects },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/admin/ecommerce/dashboard' },
+    { id: 'products', label: 'Produits', icon: Package, path: '/admin/ecommerce/products' },
+    { id: 'orders', label: 'Commandes', icon: ShoppingCart, path: '/admin/ecommerce/orders', badge: notifications.orders },
+    { id: 'inventory', label: 'Inventaire', icon: Warehouse, path: '/admin/inventory' },
+    { id: 'finances', label: 'Finances', icon: DollarSign, path: '/admin/finances' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, path: '/admin/analytics' },
+    { id: 'customers', label: 'Clients', icon: Users, path: '/admin/customers' },
+    { id: 'appointments', label: 'Rendez-vous', icon: Calendar, path: '/admin/demo-info', badge: notifications.appointments },
+    { id: 'support', label: 'Support', icon: MessageSquare, path: '/admin/demo-info', badge: notifications.support },
+    { id: 'marketing', label: 'Marketing', icon: Tag, path: '/admin/demo-info' },
+    { id: 'reviews', label: 'Avis', icon: Star, path: '/admin/demo-info', badge: notifications.reviews },
+    { id: 'content', label: 'Contenu', icon: FileText, path: '/admin/demo-info' },
+    { id: 'settings', label: 'Paramètres', icon: Settings, path: '/admin/demo-info' },
   ];
 
   const handleLogout = async () => {
     try {
       const { logout } = await import('../../utils/api');
       await logout();
-      router.push('/login');
     } catch (error) {
       console.error('Erreur déconnexion:', error);
     }
@@ -41,8 +49,8 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
     <aside className="admin-sidebar">
       <div className="sidebar-header">
         <div className="logo">
-          <span className="logo-icon">H</span>
-          <span className="logo-text">Admin Hôtel</span>
+          <span className="logo-icon">K</span>
+          <span className="logo-text">Kafé Stockholm</span>
         </div>
         <span className="admin-badge">Admin</span>
       </div>
@@ -85,9 +93,8 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
           position: fixed;
           left: 0;
           top: 0;
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(20px);
-          border-right: 1px solid rgba(255, 255, 255, 0.1);
+          background: #ffffff;
+          border-right: 1px solid #e5e7eb;
           display: flex;
           flex-direction: column;
           z-index: 100;
@@ -95,22 +102,16 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
 
         .sidebar-header {
           padding: 24px 20px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          border-bottom: 1px solid #e5e7eb;
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
 
-        .logo {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
         .logo-icon {
           width: 40px;
           height: 40px;
-          background: linear-gradient(135deg, #0066FF, #00D9FF);
+          background: linear-gradient(135deg, #1A4A8A, #2E6DB4);
           border-radius: 12px;
           display: flex;
           align-items: center;
@@ -121,19 +122,25 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
         }
 
         .logo-text {
-          color: white;
+          color: #1f2937;
           font-weight: 700;
           font-size: 16px;
         }
 
         .admin-badge {
           padding: 4px 12px;
-          background: rgba(0, 102, 255, 0.2);
-          color: #00D9FF;
+          background: #FEF3C7;
+          color: #B45309;
           border-radius: 12px;
           font-size: 12px;
           font-weight: 700;
           text-transform: uppercase;
+        }
+
+        .logo {
+          display: flex;
+          align-items: center;
+          gap: 12px;
         }
 
         .sidebar-nav {
@@ -153,7 +160,6 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
           background: transparent;
           border: none;
           border-radius: 12px;
-          color: rgba(255, 255, 255, 0.7);
           font-size: 14px;
           font-weight: 500;
           cursor: pointer;
@@ -161,16 +167,7 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
           text-align: left;
           width: 100%;
           position: relative;
-        }
-
-        .nav-item:hover {
-          background: rgba(255, 255, 255, 0.05);
-          color: white;
-        }
-
-        .nav-item.active {
-          background: rgba(0, 102, 255, 0.2);
-          color: #00D9FF;
+          color: #4b5563;
         }
 
         .nav-item.active::before {
@@ -181,13 +178,12 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
           transform: translateY(-50%);
           width: 4px;
           height: 60%;
-          background: linear-gradient(135deg, #0066FF, #00D9FF);
           border-radius: 0 4px 4px 0;
         }
 
         .nav-badge {
           margin-left: auto;
-          background: #FF6B35;
+          background: #DC2626;
           color: white;
           padding: 2px 8px;
           border-radius: 10px;
@@ -199,17 +195,35 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
 
         .nav-divider {
           height: 1px;
-          background: rgba(255, 255, 255, 0.1);
           margin: 12px 0;
+          background: #e5e7eb;
+        }
+
+        .nav-item:hover {
+          background: #f3f4f6;
+          color: #1f2937;
+        }
+
+        .nav-item.active {
+          background: #EFF6FF;
+          color: #1A4A8A;
+        }
+
+        .nav-item.active::before {
+          background: #1A4A8A;
         }
 
         .nav-item.logout {
-          color: #FF6B35;
+          color: #B45309;
           margin-top: auto;
         }
 
         .nav-item.logout:hover {
-          background: rgba(255, 107, 53, 0.1);
+          background: #FEF3C7;
+        }
+
+        .nav-divider {
+          background: #e5e7eb;
         }
 
         @media (max-width: 1024px) {

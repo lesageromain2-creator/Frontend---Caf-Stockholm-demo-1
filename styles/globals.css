@@ -1,20 +1,65 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+/* Kafé Stockholm — Design system
+ * Palette, typographie et composants UI (cursorrules section 2)
+ * Jamais de blanc pur en fond : toujours --color-bg (#FDF6EC)
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600;1,9..40,700;1,9..40,800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --primary-gold: #C9A96E;
-  --primary-gold-light: #D4BC8E;
-  --primary-gold-dark: #A68A5C;
-  --primary-dark: #1A1A1A;
-  --primary-light: #FAFAF8;
-  --secondary-taupe: #8B8680;
-  --secondary-taupe-dark: #5D5A56;
-  --accent-burgundy: #6B2C3E;
-  --transition-smooth: 0.45s cubic-bezier(0.65, 0, 0.076, 1);
-  --transition-base: 0.3s ease;
+  /* PRIMAIRES — Drapeau suédois */
+  --color-primary:         #1A4A8A;
+  --color-primary-dark:    #0D2A5C;
+  --color-primary-light:   #2E6DB4;
+  --color-primary-xlight: #EBF2FF;
+
+  /* ACCENTS */
+  --color-accent:          #F5C518;
+  --color-accent-dark:     #D4A000;
+  --color-accent2:         #C8302C;
+  --color-accent2-dark:    #A02020;
+
+  /* FONDS */
+  --color-bg:              #FDF6EC;
+  --color-bg-secondary:   #F5ECD8;
+  --color-wood:            #D4A96A;
+  --color-wood-light:      #EDD9B0;
+
+  /* TEXTES */
+  --color-text:            #2C2C2C;
+  --color-text-secondary:  #555555;
+  --color-muted:           #888888;
+  --color-border:          #E0D5C5;
+  --color-divider:         #EDE3D0;
+  --color-white:           #FFFFFF;
+  --color-surface:         #F2EDE0;
+
+  /* ÉTATS */
+  --color-success:         #2E7D32;
+  --color-warning:         #E65100;
+  --color-error:           #C8302C;
+  --color-info:            #1A4A8A;
+
+  /* TYPO */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-heading: 'DM Sans', Arial, sans-serif;
+  --font-body:    'DM Sans', Arial, sans-serif;
+  --font-inter:   'Inter', Arial, sans-serif;
+  --text-hero:    clamp(2.8rem, 5vw, 4.5rem);
+  --text-h1:      clamp(2rem, 3.5vw, 3rem);
+  --text-h2:      clamp(1.5rem, 2.5vw, 2rem);
+  --text-h3:      clamp(1.1rem, 1.8vw, 1.4rem);
+  --text-body:    1rem;
+  --text-sm:      0.875rem;
+  --text-xs:      0.75rem;
+  --text-price:   1.1rem;
+
+  /* Transitions */
+  --transition-refined: 0.25s ease;
+  --radius-refined: 6px;
 }
 
 * {
@@ -31,116 +76,113 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--primary-dark);
-  color: var(--primary-light);
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
   overflow-x: hidden;
 }
 
-/* Boutons luxe - identité visuelle */
-.btn-luxury-primary {
-  @apply relative inline-flex items-center justify-start font-accent font-semibold uppercase tracking-luxury text-sm;
-  width: 14rem;
-  height: 3.5rem;
+h1, .hero-title {
+  font-family: var(--font-display);
+}
+h2, h3, button, nav a {
+  font-family: var(--font-heading);
+}
+p, input, label, td {
+  font-family: var(--font-body);
 }
 
-.btn-luxury-primary .circle {
-  @apply absolute left-0 top-0 flex h-14 w-14 items-center justify-center rounded-full bg-primary-dark transition-all duration-300;
+/* Bouton primaire Kafé Stockholm */
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  transition: all var(--transition-refined);
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(26, 74, 138, 0.18);
 }
 
-.btn-luxury-primary .circle .icon-arrow {
-  @apply block h-0.5 w-5;
-  background: linear-gradient(90deg, var(--primary-gold) 60%, transparent 60%);
+/* Bouton secondaire */
+.btn-secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  padding: 10px 26px;
+  border-radius: 9999px;
+  transition: all var(--transition-refined);
+}
+.btn-secondary:hover {
+  background: var(--color-primary);
+  color: #fff;
 }
 
-.btn-luxury-primary .circle .icon-arrow::before {
-  content: '';
-  @apply absolute right-1 top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-t-2 border-r-2 border-primary-gold;
+/* Carte menu */
+.menu-card {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 12px rgba(26, 74, 138, 0.07);
+}
+.menu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(26, 74, 138, 0.15);
+  border-color: var(--color-accent);
+}
+.menu-card .item-price {
+  color: var(--color-accent2);
+  font-weight: 700;
+  font-size: var(--text-price);
+  font-family: var(--font-body);
 }
 
-.btn-luxury-primary .button-text {
-  @apply absolute left-14 top-1/2 -translate-y-1/2 text-primary-dark;
+/* Badges alimentaires */
+.badge-vegan {
+  background: #2E7D32;
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 2px 10px;
+  border-radius: 9999px;
+}
+.badge-vegetarian {
+  background: #558B2F;
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 2px 10px;
+  border-radius: 9999px;
+}
+.badge-signature {
+  background: var(--color-accent);
+  color: var(--color-primary-dark);
+  font-size: 0.7rem;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+.badge-new {
+  background: var(--color-accent2);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 2px 10px;
+  border-radius: 9999px;
 }
 
-.btn-luxury-primary:hover .circle {
-  @apply w-full rounded-full bg-primary-gold-dark;
+/* Séparateur nordique */
+.nordic-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent2));
+  border-radius: 2px;
+  margin: 1rem auto;
 }
-
-.btn-luxury-primary:hover .button-text {
-  @apply text-white;
-}
-
-.btn-luxury-secondary {
-  @apply inline-flex items-center gap-2 rounded-full bg-primary-gold px-6 py-3.5 font-accent font-medium uppercase tracking-wider text-primary-dark transition-all duration-300;
-  box-shadow: 0 4px 15px rgba(201, 169, 110, 0.2);
-}
-
-.btn-luxury-secondary:hover {
-  @apply -translate-y-0.5 bg-primary-gold-dark;
-  box-shadow: 0 6px 25px rgba(201, 169, 110, 0.35);
-}
-
-.btn-luxury-tertiary {
-  @apply relative inline-flex items-center justify-center overflow-hidden rounded-full border-2 border-primary-dark bg-transparent px-8 py-3.5 font-accent text-sm font-medium uppercase tracking-luxury-wide text-primary-dark transition-all duration-300;
-}
-
-.btn-luxury-tertiary::before {
-  content: '';
-  @apply absolute inset-0 -translate-x-full bg-primary-dark transition-transform duration-300;
-  z-index: -1;
-}
-
-.btn-luxury-tertiary:hover {
-  @apply text-primary-gold;
-}
-
-.btn-luxury-tertiary:hover::before {
-  @apply translate-x-0;
-}
-
-/* Variante claire pour fond sombre */
-.btn-luxury-tertiary-light {
-  @apply relative inline-flex items-center justify-center overflow-hidden rounded-full border-2 border-[#C9A96E] bg-transparent px-8 py-3.5 font-accent text-sm font-medium uppercase tracking-luxury-wide text-[#C9A96E] transition-all duration-300;
-}
-
-.btn-luxury-tertiary-light::before {
-  content: '';
-  @apply absolute inset-0 -translate-x-full bg-[#C9A96E] transition-transform duration-300;
-  z-index: -1;
-}
-
-.btn-luxury-tertiary-light:hover {
-  @apply text-[#1A1A1A];
-}
-
-.btn-luxury-tertiary-light:hover::before {
-  @apply translate-x-0;
-}
-
-/* Divider luxe */
-.divider-luxury {
-  @apply mx-auto my-6 h-px w-20;
-  background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
-}
-
-/* Classes utilitaires typographie luxe */
-.heading-hero {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 300;
-  letter-spacing: -0.02em;
-}
-
-.heading-luxury {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 400;
-}
-
-.subtitle-luxury {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--primary-gold);
-}
-

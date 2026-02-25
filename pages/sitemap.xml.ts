@@ -12,7 +12,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 function generateSiteMap(products: any[], categories: any[]) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Pages statiques -->
+  <!-- Pages statiques Kafé Stockholm -->
   <url>
     <loc>${SITE_URL}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
@@ -20,13 +20,19 @@ function generateSiteMap(products: any[], categories: any[]) {
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>${SITE_URL}/products</loc>
+    <loc>${SITE_URL}/carte</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>${SITE_URL}/about</loc>
+    <loc>${SITE_URL}/notre-histoire</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/privatisation</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -37,13 +43,31 @@ function generateSiteMap(products: any[], categories: any[]) {
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>${SITE_URL}/epicerie</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/mentions-legales</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/accessibilite</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
   
-  <!-- Produits -->
+  <!-- Articles carte -->
   ${products
     .map((product) => {
       return `
   <url>
-    <loc>${SITE_URL}/products/${product.slug}</loc>
+    <loc>${SITE_URL}/carte/${product.slug}</loc>
     <lastmod>${new Date(product.updated_at).toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -56,7 +80,7 @@ function generateSiteMap(products: any[], categories: any[]) {
     .map((category) => {
       return `
   <url>
-    <loc>${SITE_URL}/products?category=${category.slug}</loc>
+    <loc>${SITE_URL}/carte?category=${category.slug}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

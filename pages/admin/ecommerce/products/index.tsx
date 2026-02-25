@@ -1,6 +1,7 @@
 /**
  * Page Admin - Gestion des produits
  * /admin/ecommerce/products
+ * Affichage des images : même logique que la page /carte (image menu locale puis API).
  */
 
 import { useState, useEffect } from 'react';
@@ -10,6 +11,9 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import { ArrowLeft } from 'lucide-react';
+import { getProductImageUrl } from '@/utils/productImageUrl';
+import { getMenuImageForProduct } from '@/lib/menu-images';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -23,7 +27,8 @@ interface Product {
   status: string;
   category_name?: string;
   brand_name?: string;
-  featured_image: string;
+  featured_image: string | null;
+  images?: string[];
   sales_count: number;
   created_at: string;
 }
@@ -110,11 +115,18 @@ export default function AdminProductsPage() {
         <title>Gestion des produits | Admin</title>
       </Head>
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
+              <Link
+                href="/admin/ecommerce/dashboard"
+                className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 text-sm font-medium mb-4 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Retour au dashboard
+              </Link>
               <h1 className="text-3xl font-bold text-gray-900">Produits</h1>
               <p className="text-gray-600 mt-1">{pagination.total} produit(s) au total</p>
             </div>
@@ -215,9 +227,20 @@ export default function AdminProductsPage() {
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <img
-                                src={product.featured_image || '/placeholder.png'}
+                                src={
+                                  getProductImageUrl(product.featured_image || product.images?.[0]) ||
+                                  getMenuImageForProduct(product.slug, product.name) ||
+                                  'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><rect fill="#e5e7eb" width="48" height="48"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-size="18" font-family="sans-serif">' + (product.name.charAt(0) || '?') + '</text></svg>')
+                                }
                                 alt={product.name}
-                                className="w-12 h-12 object-cover rounded"
+                                className="w-12 h-12 object-cover rounded border border-gray-200 bg-gray-100 flex-shrink-0"
+                                onError={(e) => {
+                                  const el = e.target as HTMLImageElement;
+                                  if (!el.dataset.fallback) {
+                                    el.dataset.fallback = '1';
+                                    el.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><rect fill="#e5e7eb" width="48" height="48"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-size="18" font-family="sans-serif">' + (product.name.charAt(0) || '?') + '</text></svg>');
+                                  }
+                                }}
                               />
                               <div>
                                 <p className="font-medium text-gray-900">{product.name}</p>
@@ -254,7 +277,7 @@ export default function AdminProductsPage() {
                           </td>
                           <td className="px-6 py-4 text-right text-sm">
                             <div className="flex justify-end gap-2">
-                              <Link href={`/products/${product.slug}`} target="_blank">
+                              <Link href={`/carte/${product.slug}`} target="_blank" title="Voir sur la carte">
                                 <button className="text-gray-600 hover:text-blue-600 transition-colors">
                                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

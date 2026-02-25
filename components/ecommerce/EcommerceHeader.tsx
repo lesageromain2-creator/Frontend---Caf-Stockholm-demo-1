@@ -193,7 +193,7 @@ export default function EcommerceHeader() {
               >
                 {isAuthenticated && user ? (
                   <span className="w-8 h-8 flex items-center justify-center rounded-full bg-kafe-primary-xlight text-kafe-primary font-semibold text-sm">
-                    {(user.firstname || user.first_name || user.name || user.email || 'U').charAt(0).toUpperCase()}
+                    {(user.first_name || user.email || 'U').charAt(0).toUpperCase()}
                   </span>
                 ) : (
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,9 +207,9 @@ export default function EcommerceHeader() {
                     <>
                       <div className="px-4 py-2 border-b border-kafe-divider">
                         <p className="text-sm font-medium text-kafe-text">
-                          {(user.firstname || user.first_name) && (user.lastname || user.last_name)
-                            ? `${user.firstname || user.first_name} ${user.lastname || user.last_name}`
-                            : user.name || user.email}
+                          {(user.first_name && user.last_name)
+                            ? `${user.first_name} ${user.last_name}`
+                            : user.email}
                         </p>
                         <p className="text-xs text-kafe-muted">{user.email}</p>
                       </div>

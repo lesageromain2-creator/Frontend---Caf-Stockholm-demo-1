@@ -193,7 +193,7 @@ export default function AnalyticsPage() {
                     <Tooltip
                       contentStyle={{ background: '#fff', border: '1px solid #e5e7eb' }}
                       labelStyle={{ color: '#1f2937' }}
-                      formatter={(value: number, name: string) => [name === 'revenue' ? `${value} €` : value, name === 'revenue' ? 'Revenus' : 'Commandes']}
+                      formatter={(value?: number, name?: string) => [name === 'revenue' ? `${value ?? 0} €` : (value ?? 0), name === 'revenue' ? 'Revenus' : 'Commandes']}
                     />
                     <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#1A4A8A" strokeWidth={2} dot={false} name="revenue" />
                     <Line yAxisId="right" type="monotone" dataKey="orders" stroke="#3B82F6" strokeWidth={2} dot={false} name="orders" />
@@ -243,7 +243,7 @@ export default function AnalyticsPage() {
               {topProducts.length > 0 ? (
                 <ul className="space-y-3">
                   {topProducts.slice(0, 10).map((p, i) => (
-                    <li key={p.slug || String(i)} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                    <li key={`${p.name}-${i}`} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                       <span className="text-gray-900 truncate max-w-[200px]" title={p.name}>{p.name}</span>
                       <span className="text-kafe-primary text-sm">{Number(p.units_sold)} vendus · {Number(p.revenue).toFixed(0)} €</span>
                     </li>

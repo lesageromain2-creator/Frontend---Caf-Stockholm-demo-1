@@ -34,6 +34,19 @@ export default function AdminLayout({
     reviews: 0,
   });
 
+  // Dériver la section active depuis l'URL pour la sidebar
+  const pathToSection: [string, string][] = [
+    ['/admin/ecommerce/dashboard', 'dashboard'],
+    ['/admin/ecommerce/products', 'products'],
+    ['/admin/ecommerce/orders', 'orders'],
+    ['/admin/inventory', 'inventory'],
+    ['/admin/finances', 'finances'],
+    ['/admin/analytics', 'analytics'],
+    ['/admin/customers', 'customers'],
+    ['/admin/demo-info', 'appointments'],
+  ];
+  const activeSection = pathToSection.find(([path]) => router.pathname === path || router.pathname.startsWith(path + '/'))?.[1] ?? 'dashboard';
+
   useEffect(() => {
     if (requireAuth) {
       checkAuth();
@@ -102,6 +115,7 @@ export default function AdminLayout({
   return (
     <div className="admin-layout">
       <AdminSidebar 
+        activeSection={activeSection}
         notifications={notifications}
         onNavigate={() => setSidebarOpen(false)}
       />

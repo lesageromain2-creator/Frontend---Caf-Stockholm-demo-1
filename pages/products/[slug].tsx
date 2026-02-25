@@ -100,7 +100,7 @@ export default function ProductDetailPage() {
       name: product.name,
       variantName: selectedVariant?.name,
       sku: selectedVariant?.sku || product.sku,
-      price: selectedVariant ? parseFloat(product.price) + parseFloat(selectedVariant.price_adjustment || 0) : parseFloat(product.price),
+      price: selectedVariant ? Number(product.price) + Number(selectedVariant.price_adjustment || 0) : Number(product.price),
       quantity,
       image: product.featured_image || product.images?.[0],
       slug: product.slug,

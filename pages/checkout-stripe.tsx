@@ -28,7 +28,7 @@ interface ShippingForm {
 
 export default function CheckoutStripePage() {
   const router = useRouter();
-  const { items, cart, fetchCart } = useCartStore();
+  const { items, syncWithBackend, sessionId } = useCartStore();
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
 
@@ -57,8 +57,8 @@ export default function CheckoutStripePage() {
   const [sameAsShipping, setSameAsShipping] = useState(true);
 
   useEffect(() => {
-    fetchCart().finally(() => setLoading(false));
-  }, [fetchCart]);
+    syncWithBackend().finally(() => setLoading(false));
+  }, [syncWithBackend]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,7 +106,7 @@ export default function CheckoutStripePage() {
       const response = await axios.post(
         `${API_URL}/stripe/create-checkout`,
         {
-          cartId: cart?.id,
+          cartId: sessionId ?? undefined,
           shippingAddress,
           billingAddress,
         },
@@ -155,9 +155,9 @@ export default function CheckoutStripePage() {
     );
   }
 
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = 0; // Calculé par Stripe ou gratuit
-  const total = subtotal + shipping;
+  const subtotal: number = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shipping: number = 0; // Calculé par Stripe ou gratuit
+  const total: number = subtotal + shipping;
 
   return (
     <>

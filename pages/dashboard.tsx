@@ -27,18 +27,34 @@ import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
+interface DashboardUser {
+  firstname?: string;
+  first_name?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
+interface DashboardOrder {
+  id: string;
+  status: string;
+  order_number: string;
+  created_at: string;
+  total_amount: number;
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const { logout } = useAuth();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<DashboardUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [mounted, setMounted] = useState(false);
 
   // Données
-  const [orders, setOrders] = useState([]);
-  const [addresses, setAddresses] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
+  const [orders, setOrders] = useState<DashboardOrder[]>([]);
+  const [addresses, setAddresses] = useState<unknown[]>([]);
+  const [wishlist, setWishlist] = useState<unknown[]>([]);
 
   useEffect(() => {
     setMounted(true);
@@ -72,9 +88,10 @@ export default function Dashboard() {
       });
       
       setLoading(false);
-    } catch (error) {
-      console.error('Erreur chargement:', error);
+    } catch (err: unknown) {
+      console.error('Erreur chargement:', err);
       toast.error('Erreur de chargement');
+      const error = err as { response?: { status?: number } };
       if (error.response?.status === 401) {
         router.push('/login');
       }
@@ -92,7 +109,7 @@ export default function Dashboard() {
       });
       
       if (response.data.success) {
-        setOrders(response.data.orders || []);
+        setOrders((response.data.orders || []) as DashboardOrder[]);
       }
     } catch (error) {
       console.error('Erreur chargement commandes:', error);
@@ -104,7 +121,7 @@ export default function Dashboard() {
     await logout();
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
       case 'delivered':
@@ -119,7 +136,7 @@ export default function Dashboard() {
     }
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
       case 'delivered':
@@ -134,8 +151,8 @@ export default function Dashboard() {
     }
   };
 
-  const getStatusLabel = (status) => {
-    const labels = {
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
       pending: 'En attente',
       processing: 'En préparation',
       ready: 'Prêt à retirer',
@@ -144,7 +161,7 @@ export default function Dashboard() {
       completed: 'Récupérée',
       cancelled: 'Annulée',
     };
-    return labels[status] || status;
+    return labels[status] ?? status;
   };
 
   if (loading) {
@@ -201,7 +218,7 @@ export default function Dashboard() {
             {/* Welcome Section */}
             <div className="mb-8">
               <h1 className="font-heading text-3xl text-kafe-offwhite mb-2">
-                Hej, {user?.firstname || user?.name?.split(' ')[0]}! 👋
+                Hej, {user?.firstname || user?.first_name || (user?.name?.split(' ')[0])}! 👋
               </h1>
               <p className="text-kafe-offwhite/60">Votre espace commandes click & collect</p>
             </div>
@@ -212,7 +229,7 @@ export default function Dashboard() {
                 <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6 sticky top-6">
                   <div className="mb-6 text-center">
                     <div className="w-20 h-20 bg-gradient-to-br from-kafe-primary to-kafe-sage rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-2xl">
-                      {user?.firstname?.charAt(0) || 'U'}
+                      {user?.firstname?.charAt(0) || user?.first_name?.charAt(0) || 'U'}
                     </div>
                     <h3 className="font-heading text-lg text-kafe-offwhite">{user?.name || user?.email}</h3>
                     <p className="text-sm text-kafe-offwhite/60">{user?.email}</p>

@@ -730,98 +730,68 @@ export default function HomePage() {
         <title key="title">Kafé Stockholm — Café suédois authentique à Lyon</title>
       </Head>
       <EcommerceLayout noPadding>
-        <div className="w-full min-w-full overflow-x-hidden pt-[7rem] sm:pt-0" style={{ background: colors.white }}>
+        <div
+          className="w-full min-w-full overflow-x-hidden pt-[72px] sm:pt-[86px] lg:pt-[96px]"
+          style={{
+            background: 'linear-gradient(to bottom, #F3D6D6 100px, #fff 100px)',
+          }}
+        >
 
-          {/* Hero 1 — Disposition Figma Group-hero-1 : bandeau 3 colonnes, hauteur ≥ 50% de la page */}
+          {/* Hero 1 — Quand menu déroulant (< lg) : image centrale seule, min 50vh. Desktop (lg) : 3 colonnes. */}
           <section
-            className="relative w-full overflow-hidden bg-[#F3D6D6] mt-[7px] flex items-center justify-center min-h-[50vh] md:min-h-[50vh] lg:min-h-[1080px] py-6 md:py-8 lg:py-0"
+            className="relative w-full overflow-hidden bg-[#F3D6D6] mt-0 lg:mt-0 flex items-center justify-center min-h-[50vh] lg:min-h-[min(90vh,1080px)] py-6 lg:py-8"
             aria-label="Kafé Stockholm — Accueil"
           >
-            {/* Mobile / tablette : bandeau Figma agrandi pour occuper la moitié de page */}
+            {/* Image centrale seule : tout < lg (menu déroulant) — pas de barres latérales, occupe au moins 50vh */}
             <div
-              className="hidden sm:flex lg:hidden flex-row justify-center items-center flex-none mx-auto"
+              className="flex lg:hidden justify-center items-center flex-1 min-h-[50vh] overflow-hidden"
+              style={{ width: 'min(500px, 90vw)', isolation: 'isolate' }}
+            >
+              <img
+                src="/images/titre page acceuil.png"
+                alt="Kafé Stockholm — Fika"
+                className="w-full h-auto max-h-[60vh] object-contain scale-105 sm:scale-100"
+              />
+            </div>
+
+            {/* Desktop (lg) uniquement : disposition 3 colonnes avec barres latérales */}
+            <div
+              className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex-row justify-center items-center flex-none w-[91.8%] max-w-[1762px]"
               style={{
-                gap: 'clamp(16px, 4vw, 28px)',
-                width: 'min(420px, 94vw)',
-                height: 'min(45vh, 380px)',
-                maxWidth: '100%',
+                height: 'min(688px, 72vh)',
+                gap: 'clamp(60px, 6vw, 110px)',
               }}
             >
-              {/* section gauche — dimensions agrandies */}
-              <div
-                className="flex flex-col items-start flex-none"
-                style={{ width: 'clamp(100px, 26vw, 120px)', gap: 'clamp(2px, 0.6vw, 4px)' }}
-              >
-                <img src="/images/product5-brunch.png" alt="" aria-hidden className="w-full h-auto object-cover rounded" style={{ aspectRatio: '96.46/60.33' }} />
-                <img src="/images/equipe.png" alt="" aria-hidden className="w-full h-auto object-cover rounded" style={{ aspectRatio: '96.45/54.04' }} />
-                <div className="flex flex-row justify-center items-end w-full" style={{ height: 'clamp(22px, 6vw, 28px)' }}>
-                  <img src="/images/kanelbul.png" alt="" aria-hidden className="h-full w-auto object-cover object-bottom" style={{ aspectRatio: '18.83/21.17' }} />
-                  <img src="/images/insta2.png" alt="" aria-hidden className="h-full w-auto object-cover object-bottom" style={{ aspectRatio: '15.91/21.22' }} />
-                  <img src="/images/realproduct1.png" alt="" aria-hidden className="h-full w-auto object-cover object-bottom" style={{ aspectRatio: '20.55/21.06' }} />
-                  <img src="/images/caption (5).jpg" alt="" aria-hidden className="h-full w-auto object-cover object-bottom" style={{ aspectRatio: '37.84/21.02' }} />
+              <div className="flex flex-col items-start flex-none h-full" style={{ width: '26%', maxWidth: 457, gap: 10 }}>
+                <img src="/images/product5-brunch.png" alt="" aria-hidden className="w-full flex-1 min-h-0 object-cover rounded" style={{ aspectRatio: '457/286' }} />
+                <img src="/images/equipe.png" alt="" aria-hidden className="w-full flex-shrink-0 object-cover rounded" style={{ aspectRatio: '457/256', maxHeight: '37%' }} />
+                <div className="flex flex-row justify-center items-end w-full flex-shrink-0" style={{ height: 'clamp(52px, 15%, 104px)' }}>
+                  <img src="/images/kanelbul.png" alt="" aria-hidden className="object-cover object-bottom h-full w-auto" style={{ aspectRatio: '89.19/100.29' }} />
+                  <img src="/images/insta2.png" alt="" aria-hidden className="object-cover object-bottom h-full w-auto" style={{ aspectRatio: '75.4/100.53' }} />
+                  <img src="/images/realproduct1.png" alt="" aria-hidden className="object-cover object-bottom h-full w-auto" style={{ aspectRatio: '97.36/99.8' }} />
+                  <img src="/images/caption (5).jpg" alt="" aria-hidden className="object-cover object-bottom h-full w-auto hidden min-[1441px]:block" style={{ aspectRatio: '179.29/99.61' }} />
                 </div>
               </div>
-              {/* Center — titre + drapeau agrandi */}
-              <div className="relative flex flex-col justify-center items-center flex-none" style={{ width: 'clamp(140px, 40vw, 180px)', height: 'clamp(130px, 38vh, 170px)', isolation: 'isolate' }}>
-                <img src="/images/titre page acceuil.png" alt="Kafé Stockholm — Fika" className="w-full h-full object-contain z-0" />
-                <img
-                  src="/images/arriere-plan-pour-concepteurs-modele-3d-fete-nationale-drapeaux-nationaux-republique-populaire-france-suede_659987-17565 (3).png"
-                  alt=""
-                  aria-hidden
-                  className="absolute object-cover z-[1]"
-                  style={{ width: 'clamp(22px, 6.5vw, 30px)', height: 'clamp(14px, 4.5vw, 20px)', left: '43.8%', top: '90.8%', transform: 'translate(-50%, -50%)', mixBlendMode: 'darken' }}
-                />
-              </div>
-              {/* section droite — dimensions agrandies */}
-              <div
-                className="flex flex-col items-end flex-none"
-                style={{ width: 'clamp(70px, 22vw, 95px)', gap: 'clamp(2px, 0.6vw, 4px)' }}
-              >
-                <img src="/images/realproduct10.png" alt="" aria-hidden className="w-full h-auto object-cover rounded" style={{ aspectRatio: '78.31/95.16' }} />
-                <img src="/images/acceuil-2.png" alt="" aria-hidden className="w-full h-auto object-cover rounded" style={{ aspectRatio: '78.31/47.98' }} />
-              </div>
-            </div>
-
-            {/* Très petit écran (< sm) : titre centré agrandi pour occuper la moitié de page */}
-            <div className="flex sm:hidden justify-center items-center flex-1 min-h-[40vh]" style={{ width: 'min(280px, 90vw)', isolation: 'isolate' }}>
-              <img src="/images/titre page acceuil.png" alt="Kafé Stockholm — Fika" className="w-full h-auto max-h-[50vh] object-contain" />
-            </div>
-
-            {/* Desktop (lg) : même disposition Figma agrandie — bandeau 3 col. 457 | 714.6 | 371, gap 110 */}
-            <div
-              className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex-row justify-center items-center flex-none"
-              style={{ width: '91.8%', maxWidth: 1762.6, height: 688.32, gap: 110 }}
-            >
-              <div className="flex flex-col items-start flex-none" style={{ width: 457, gap: 10 }}>
-                <img src="/images/product5-brunch.png" alt="" aria-hidden className="w-full object-cover" style={{ width: 457, height: 286 }} />
-                <img src="/images/equipe.png" alt="" aria-hidden className="w-full object-cover" style={{ width: 457, height: 256 }} />
-                <div className="flex flex-row justify-center items-end w-full" style={{ height: 104 }}>
-                  <img src="/images/kanelbul.png" alt="" aria-hidden className="object-cover" style={{ width: 89.19, height: 100.29 }} />
-                  <img src="/images/insta2.png" alt="" aria-hidden className="object-cover" style={{ width: 75.4, height: 100.53 }} />
-                  <img src="/images/realproduct1.png" alt="" aria-hidden className="object-cover" style={{ width: 97.36, height: 99.8 }} />
-                  <img src="/images/caption (5).jpg" alt="" aria-hidden className="object-cover" style={{ width: 179.29, height: 99.61 }} />
-                </div>
-              </div>
-              <div className="relative flex flex-col justify-center items-center flex-none" style={{ width: 714.6, height: 687.09, isolation: 'isolate' }}>
+              <div className="relative flex flex-col justify-center items-center flex-none h-full" style={{ width: '40.5%', maxWidth: 714.6, isolation: 'isolate' }}>
                 <img src="/images/titre page acceuil.png" alt="Kafé Stockholm — Fika" className="w-full h-full object-contain" style={{ zIndex: 0 }} />
                 <img
                   src="/images/arriere-plan-pour-concepteurs-modele-3d-fete-nationale-drapeaux-nationaux-republique-populaire-france-suede_659987-17565 (3).png"
                   alt=""
                   aria-hidden
-                  className="absolute object-cover"
-                  style={{ width: 119.03, height: 79.29, left: 313, top: 624.38, mixBlendMode: 'darken', zIndex: 1 }}
+                  className="absolute object-contain object-center h-auto left-[52%] -translate-x-1/2 bottom-0 w-[clamp(66px,6.6vw,120px)]"
+                  style={{ mixBlendMode: 'darken', zIndex: 1 }}
                 />
               </div>
-              <div className="flex flex-col items-end flex-none" style={{ width: 371, gap: 10 }}>
-                <img src="/images/realproduct10.png" alt="" aria-hidden className="w-full object-cover" style={{ width: 371, height: 451 }} />
-                <img src="/images/acceuil-2.png" alt="" aria-hidden className="w-full object-cover" style={{ width: 371, height: 227.32 }} />
+              <div className="flex flex-col items-end flex-none h-full" style={{ width: '21%', maxWidth: 371, gap: 10 }}>
+                <img src="/images/realproduct10.png" alt="" aria-hidden className="w-full flex-1 min-h-0 object-cover rounded" style={{ aspectRatio: '371/451' }} />
+                <img src="/images/acceuil-2.png" alt="" aria-hidden className="w-full flex-shrink-0 object-cover rounded" style={{ aspectRatio: '371/227.32', maxHeight: '33%' }} />
               </div>
             </div>
           </section>
 
-          {/* Carrousel mobile Hero 1 — images bande gauche + droite, 1 par 1, défilable (visible uniquement < sm) */}
+          {/* Carrousel Hero 1 — images qui ne sont pas dans le hero (visible pour tous les formats avec menu déroulant, < lg) */}
           <section
-            className="sm:hidden w-full overflow-hidden bg-[#F3D6D6] py-4"
+            className="lg:hidden w-full overflow-hidden bg-[#F3D6D6] py-4"
             aria-label="Galerie Kafé Stockholm"
           >
             <div
@@ -832,9 +802,9 @@ export default function HomePage() {
                 WebkitOverflowScrolling: 'touch',
               }}
             >
-              {HERO1_MOBILE_CAROUSEL_IMAGES.map((src, i) => (
+              {HERO1_MOBILE_CAROUSEL_IMAGES.filter((_, i) => i !== 1).map((src, i) => (
                 <div
-                  key={i}
+                  key={src}
                   className="flex-shrink-0 snap-center overflow-hidden rounded-lg w-[42vw] max-w-[160px]"
                   style={{ aspectRatio: '4/5' }}
                 >
@@ -1197,19 +1167,33 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Equipe */}
-          <section className="w-full py-10 md:py-14 lg:py-20 overflow-x-hidden" style={{ background: colors.primaryLink }}>
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-8 md:max-w-[1400px] md:gap-16 md:px-10">
-              <img src="/images/equipe-1.png" alt="Équipe" className="w-full h-80 object-cover rounded-lg md:w-[480px] md:h-[480px] md:object-contain md:flex-shrink-0" />
+          {/* Equipe — texte au-dessus des deux images, sur une ligne, responsive tous formats */}
+          <section className="w-full py-8 sm:py-10 md:py-14 lg:py-20 overflow-hidden" style={{ background: colors.primaryLink }}>
+            <div className="max-w-6xl md:max-w-[1400px] mx-auto px-4 sm:px-6 flex flex-col items-center gap-6 sm:gap-8 md:gap-10">
               <h2
-                className="font-display font-semibold text-center text-white flex-1 md:min-w-[280px] md:px-6"
-                style={{ fontFamily: fonts.display, fontSize: `clamp(28px, 3vw, ${fontSizes.sectionH2}px)`, lineHeight: 1.52 }}
+                className="font-display font-semibold text-center text-white w-full max-w-full min-w-0 break-words"
+                style={{
+                  fontFamily: fonts.display,
+                  fontSize: 'clamp(20px, 4.5vw, 48px)',
+                  lineHeight: 1.35,
+                }}
               >
-                Une équipe souriante<br />et à l'écoute !
+                Une équipe souriante et à l'écoute !
               </h2>
-              <img src="/images/equipe-2-2ad45c.png" alt="Équipe" className="w-full h-80 object-cover rounded-lg md:w-[480px] md:h-[480px] md:object-contain md:flex-shrink-0" />
-          </div>
-        </section>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 md:gap-12 w-full max-w-full">
+                <img
+                  src="/images/equipe-1.png"
+                  alt="Équipe"
+                  className="w-full max-w-full h-48 sm:h-64 md:h-72 object-cover object-center rounded-lg flex-shrink-0 md:max-w-[min(42vw,480px)] md:max-h-[min(42vw,480px)]"
+                />
+                <img
+                  src="/images/equipe-2-2ad45c.png"
+                  alt="Équipe"
+                  className="w-full max-w-full h-48 sm:h-64 md:h-72 object-cover object-center rounded-lg flex-shrink-0 md:max-w-[min(42vw,480px)] md:max-h-[min(42vw,480px)]"
+                />
+              </div>
+            </div>
+          </section>
 
           {/* Privatisation */}
           <section className="w-full py-10 md:py-14 lg:py-20 overflow-x-hidden" style={{ background: colors.bgCream }}>
@@ -1253,7 +1237,7 @@ export default function HomePage() {
         </section>
 
           {/* Visite Prince — Mobile : 1 image, texte adapté. Desktop : structure Figma (positions, polices, couleurs). */}
-          <section className="relative w-full py-12 md:py-0 overflow-hidden min-h-[300px] md:min-h-[803px]" style={{ background: '#fff' }}>
+          <section className="relative w-full py-12 md:py-0 overflow-hidden min-h-[300px] md:min-h-0" style={{ background: '#fff' }}>
             {/* ——— Mobile (< md) ——— */}
             <div className="md:hidden relative flex min-h-[320px]">
               {/* Image du prince à gauche — visible en entier */}
@@ -1272,94 +1256,123 @@ export default function HomePage() {
                   className="absolute right-0 top-0 h-full w-full min-w-[58vw] max-w-none object-cover object-left opacity-90"
                   style={{ width: '58vw' }}
                 />
-                <div className="relative z-10 flex flex-col items-center justify-center min-h-[280px] px-3 py-6 text-center">
-                  <h2 className="font-display font-extrabold text-white !text-[22px] sm:!text-[24px]" style={{ fontFamily: fonts.display, lineHeight: 1.25 }}>
+                <div className="relative z-10 flex flex-col items-center justify-center min-h-[280px] px-3 py-6 text-center min-w-0 max-w-full">
+                  <h2
+                    className="font-display font-extrabold text-white break-words"
+                    style={{
+                      fontFamily: fonts.display,
+                      lineHeight: 1.25,
+                      fontSize: 'clamp(18px, 5.5vw, 26px)',
+                    }}
+                  >
                     Le Prince est venu<br />nous rendre visite
                   </h2>
-                  <p className="mt-4 font-normal italic text-white !text-[14px] sm:!text-[15px] !leading-snug" style={{ fontFamily: fonts.body }}>
+                  <p
+                    className="mt-3 sm:mt-4 font-normal italic text-white break-words max-w-full"
+                    style={{
+                      fontFamily: fonts.body,
+                      fontSize: 'clamp(12px, 3.2vw, 16px)',
+                      lineHeight: 1.35,
+                    }}
+                  >
                     En janvier 2023, Kafé Stockholm a eu l'honneur d'accueillir le Prince Carl Philip de Suède à l'occasion du Bocuse d'Or. Une fierté pour toute notre équipe.
                   </p>
                   <Link
                     href="/notre-histoire"
-                    className="inline-block mt-5 !px-4 !py-2 !text-xs rounded-full font-bold text-center transition-all duration-300 ease-out hover:scale-[1.05] hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
-                    style={{ fontFamily: fonts.body, letterSpacing: '0.04em', color: colors.primaryDark, background: colors.accent, borderRadius: layout.princeBadgeRadius }}
+                    className="inline-block mt-4 sm:mt-5 px-3 py-2 sm:px-4 sm:py-2 rounded-full font-bold text-center transition-all duration-300 ease-out hover:scale-[1.05] hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] max-w-full"
+                    style={{
+                      fontFamily: fonts.body,
+                      letterSpacing: '0.04em',
+                      fontSize: 'clamp(11px, 2.8vw, 14px)',
+                      color: colors.primaryDark,
+                      background: colors.accent,
+                      borderRadius: layout.princeBadgeRadius,
+                    }}
                   >
-                    ⭐ Certifié authentiquement suédois
+                    <span className="break-words">⭐ Certifié authentiquement suédois</span>
                   </Link>
                 </div>
               </div>
             </div>
 
-            {/* ——— Desktop (md+) : structure Figma 1915×803 — deux images côte à côte, texte + bouton */}
-            <div className="hidden md:block relative w-full max-w-[1915px] mx-auto h-[803px] overflow-hidden" style={{ background: '#fff' }}>
-              {/* deux images côte à côte — flex row */}
-              <div
-                className="absolute flex flex-row items-center"
-                style={{ width: 1919, height: 805, left: -4, top: 0 }}
-              >
+            {/* ——— Desktop (md+) : structure Figma scalable pour Mac / petits PC — deux images + texte en % */}
+            <div
+              className="hidden md:block relative w-full max-w-[1915px] mx-auto overflow-hidden"
+              style={{
+                background: '#fff',
+                aspectRatio: '1915/803',
+              }}
+            >
+              <div className="absolute inset-0 flex flex-row items-stretch">
                 <img
                   src="/images/prince-image.png"
                   alt="Prince Carl Philip"
-                  className="flex-none object-cover object-bottom"
-                  style={{ width: 719.58, height: 796.27 }}
+                  className="flex-none object-cover object-bottom w-[37.5%]"
+                  style={{ maxWidth: 720 }}
                 />
                 <img
                   src="/images/prince-visit.png"
                   alt=""
-                  className="flex-none object-cover"
-                  style={{ width: 1175, height: 802 }}
+                  className="flex-1 object-cover object-left min-w-0"
                 />
               </div>
 
-              {/* text and button — flex col, align-end, gap 18 */}
+              {/* Bloc texte + badge — responsive : pas de débordement ni texte écrasé */}
               <div
-                className="absolute z-10 flex flex-col items-end"
-                style={{ width: 1007.48, height: 681.21, left: 727.61, top: 58.8, gap: 18 }}
+                className="absolute z-10 flex flex-col items-end justify-center pr-[3%] sm:pr-[4%] xl:pr-[6%] pl-[2%] min-w-0 max-w-[62%]"
+                style={{
+                  left: '38%',
+                  right: 0,
+                  top: '6%',
+                  bottom: '8%',
+                  gap: 'clamp(6px, 1vw, 18px)',
+                }}
               >
-                {/* texte — flex col, justify-center, align-end, gap 25 */}
-                <div
-                  className="flex flex-col justify-center items-end flex-none"
-                  style={{ width: 1007.48, height: 594.33, gap: 25 }}
-                >
+                <div className="flex flex-col justify-center items-end flex-1 min-h-0 w-full max-w-full overflow-hidden" style={{ gap: 'clamp(8px, 1.2vw, 25px)' }}>
                   <h2
-                    className="font-display font-extrabold flex-none text-center"
-                    style={{ width: 737, fontFamily: 'Playfair Display', fontWeight: 800, fontSize: '85.4159px', lineHeight: '107px', color: '#0D2A5C' }}
+                    className="font-display font-extrabold text-right break-words w-full"
+                    style={{
+                      fontFamily: 'Playfair Display',
+                      fontWeight: 800,
+                      fontSize: 'clamp(22px, 3.2vw, 85px)',
+                      lineHeight: 1.2,
+                      color: '#0D2A5C',
+                    }}
                   >
                     Le Prince est venu<br />nous rendre visite
                   </h2>
-                  {/* Container paragraphe — position relative pour le paragraphe en absolute */}
-                  <div className="relative flex-none" style={{ width: 1007.48, height: 355.33 }}>
-                    <p
-                      className="absolute font-normal italic text-center"
-                      style={{
-                        fontFamily: 'DM Sans',
-                        fontSize: '51.75px',
-                        lineHeight: '44px',
-                        color: '#0D2A5C',
-                        width: 831.09,
-                        left: 'calc(50% - 831.09px / 2 + 27.8px)',
-                        top: -11.74,
-                      }}
-                    >
-                      En janvier 2023, Kafé Stockholm a eu l'honneur d'accueillir le Prince Carl Philip de Suède à l'occasion du Bocuse d'Or. Une fierté pour toute notre équipe.
-                    </p>
-                  </div>
+                  <p
+                    className="font-normal italic text-right w-full overflow-hidden break-words"
+                    style={{
+                      fontFamily: 'DM Sans',
+                      fontSize: 'clamp(13px, 1.8vw, 52px)',
+                      lineHeight: 1.25,
+                      color: '#0D2A5C',
+                    }}
+                  >
+                    En janvier 2023, Kafé Stockholm a eu l'honneur d'accueillir le Prince Carl Philip de Suède à l'occasion du Bocuse d'Or. Une fierté pour toute notre équipe.
+                  </p>
                 </div>
 
-                {/* Background — badge (PC : lien vers Notre histoire) */}
                 <Link
                   href="/notre-histoire"
-                  className="relative flex-none flex items-center justify-center px-8 py-3 rounded-[40px] transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
-                  style={{ minWidth: 487.84, height: 68.88, background: '#F5C842', borderRadius: 40.5196, boxShadow: '0 4px 14px rgba(245,200,66,0.3)' }}
+                  className="relative flex-none flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2 xl:px-8 xl:py-3 rounded-[40px] transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] min-w-0 max-w-full"
+                  style={{
+                    minWidth: 'clamp(160px, 22vw, 488px)',
+                    height: 'clamp(40px, 7vh, 69px)',
+                    background: '#F5C842',
+                    borderRadius: 40,
+                    boxShadow: '0 4px 14px rgba(245,200,66,0.3)',
+                  }}
                 >
                   <span
-                    className="font-bold text-center whitespace-nowrap"
+                    className="font-bold text-center break-words px-1"
                     style={{
                       fontFamily: 'DM Sans',
                       fontWeight: 700,
-                      fontSize: '21.9481px',
-                      lineHeight: '35px',
-                      letterSpacing: '0.877924px',
+                      fontSize: 'clamp(11px, 1vw, 22px)',
+                      lineHeight: 1.25,
+                      letterSpacing: '0.02em',
                       color: '#0D2A5C',
                     }}
                   >

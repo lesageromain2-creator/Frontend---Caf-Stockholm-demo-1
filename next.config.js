@@ -22,6 +22,9 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/**' },
       { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
+      // Backend Render (images uploadées quand NEXT_PUBLIC_API_URL pointe vers Render ou que les URLs en BDD sont en absolu)
+      { protocol: 'https', hostname: 'backend-caf-stockholm-demo-1.onrender.com', pathname: '/**' },
+      { protocol: 'http', hostname: 'backend-caf-stockholm-demo-1.onrender.com', pathname: '/**' },
       ...getApiImageRemotePatterns(),
     ],
     formats: ['image/avif', 'image/webp'],

@@ -62,15 +62,14 @@ export default function EcommerceHeaderFigma() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300" style={{ backgroundColor: '#233C9D' }} data-figma="Group Header">
-      {/* Figma: 1920×119, padding 6px 159px — on desktop match Figma; on small screens reduce padding */}
-      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-[159px] py-1.5">
-        <div className="flex items-center justify-between h-[100px] lg:h-[115px]">
-          {/* Logo — Figma logo 3: 130.69×119 at (9,0) */}
-          <Link href="/" className="flex-shrink-0 h-16 sm:h-20 lg:h-[119px] w-auto" style={{ maxWidth: 130.69 }}>
+      <div className="w-full max-w-[100vw] mx-auto px-3 sm:px-6 lg:px-[8vw] xl:px-[159px] py-1.5 lg:py-0 pb-2 box-border">
+        <div className="flex items-center justify-between gap-2 min-h-[56px] sm:min-h-[72px] lg:min-h-[88px] h-[56px] sm:h-[72px] lg:h-[88px] min-w-0">
+          {/* Logo — responsive : ne déborde pas sur petit écran */}
+          <Link href="/" className="flex-shrink-0 h-14 sm:h-20 lg:h-[84px] w-auto max-w-[110px] sm:max-w-[160px] lg:max-w-[200px] min-w-0">
             <img
               src="/images/logo.png"
               alt={SITE.name}
-              className="h-full w-auto max-w-[130px] object-contain object-left"
+              className="h-full w-auto max-w-full object-contain object-left"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = 'none';
                 const fallback = document.createElement('span');
@@ -143,44 +142,87 @@ export default function EcommerceHeaderFigma() {
             </Link>
           </nav>
 
-          {/* Right: Connexion et panier — Figma x:1704, 145.75 width */}
-          <div className="flex items-center gap-3 lg:gap-4">
-
-            {/* User menu */}
+          {/* Right: Connexion et panier — tailles adaptées pour ne pas déborder */}
+          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 flex-shrink-0">
             <div className="relative" ref={userMenuRef}>
               <button
                 type="button"
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center justify-center w-11 h-11 rounded-lg text-white hover:bg-white/10 transition-all"
+                className="flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-lg text-white hover:bg-white/10 transition-all flex-shrink-0"
                 aria-label={isAuthenticated && user ? 'Mon compte' : 'Connexion'}
+                aria-expanded={userMenuOpen}
+                aria-haspopup="true"
               >
                 {isAuthenticated && user ? (
-                  <span className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/20 text-white font-semibold text-base">
+                  <span className="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg bg-white/20 text-white font-semibold text-sm sm:text-base flex-shrink-0">
                     {(user.first_name || user.email || 'U').charAt(0).toUpperCase()}
                   </span>
                 ) : (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 )}
               </button>
               {userMenuOpen && (
-                <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-kafe-border shadow-refined-hover rounded-lg py-2 z-50">
+                <div
+                  className="absolute top-full right-0 mt-2 w-56 rounded-lg py-2 z-[100] min-w-[200px]"
+                  style={{
+                    background: '#fff',
+                    border: '1px solid #E0D5C5',
+                    boxShadow: '0 8px 32px rgba(13, 42, 92, 0.2)',
+                    color: '#1A1A1A',
+                  }}
+                  role="menu"
+                >
                   {isAuthenticated && user ? (
                     <>
-                      <div className="px-4 py-2 border-b border-kafe-divider">
-                        <p className="text-sm font-medium text-kafe-text">{(user.first_name && user.last_name) ? `${user.first_name} ${user.last_name}` : user.email}</p>
-                        <p className="text-xs text-kafe-muted">{user.email}</p>
+                      <div className="px-4 py-3 border-b border-[#EDE3D0]">
+                        <p className="text-sm font-medium truncate" style={{ color: '#1A1A1A' }}>
+                          {(user.first_name && user.last_name) ? `${user.first_name} ${user.last_name}` : user.email}
+                        </p>
+                        {(user.first_name || user.last_name) && user.email && (
+                          <p className="text-xs mt-0.5 truncate" style={{ color: '#888880' }}>{user.email}</p>
+                        )}
                       </div>
-                      <Link href={user.role === 'admin' ? '/admin/ecommerce/dashboard' : '/dashboard'} className="block px-4 py-2.5 text-sm text-kafe-text hover:bg-kafe-primary-xlight" onClick={() => setUserMenuOpen(false)}>Mon compte</Link>
-                      <button onClick={() => { logout(); setUserMenuOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-kafe-accent2 hover:bg-kafe-primary-xlight">
-                        Déconnexion
+                      <Link
+                        href={user.role === 'admin' ? '/admin/ecommerce/dashboard' : '/dashboard'}
+                        role="menuitem"
+                        className="block px-4 py-3 text-sm font-medium transition-colors hover:bg-[#EBF2FF]"
+                        style={{ color: '#1A4A8A' }}
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        Mon compte
+                      </Link>
+                      <button
+                        type="button"
+                        role="menuitem"
+                        onClick={() => { logout(); setUserMenuOpen(false); }}
+                        className="w-full text-left px-4 py-3 text-sm font-medium transition-colors hover:bg-[#EBF2FF]"
+                        style={{ color: '#C8302C' }}
+                      >
+                        Se déconnecter
                       </button>
                     </>
                   ) : (
                     <>
-                      <Link href="/login" className="block px-4 py-2.5 text-sm font-medium text-kafe-text hover:bg-kafe-primary-xlight" onClick={() => setUserMenuOpen(false)}>Connexion</Link>
-                      <Link href="/register" className="block px-4 py-2 text-sm text-kafe-text hover:bg-kafe-primary-xlight" onClick={() => setUserMenuOpen(false)}>S&apos;inscrire</Link>
+                      <Link
+                        href="/login"
+                        role="menuitem"
+                        className="block px-4 py-3 text-sm font-medium transition-colors hover:bg-[#EBF2FF]"
+                        style={{ color: '#1A1A1A' }}
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        Connexion
+                      </Link>
+                      <Link
+                        href="/register"
+                        role="menuitem"
+                        className="block px-4 py-3 text-sm transition-colors hover:bg-[#EBF2FF]"
+                        style={{ color: '#4A4A4A' }}
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        S&apos;inscrire
+                      </Link>
                     </>
                   )}
                 </div>
@@ -188,12 +230,12 @@ export default function EcommerceHeaderFigma() {
             </div>
 
             {/* Cart */}
-            <Link href="/cart" className="relative flex items-center justify-center w-11 h-11 rounded-lg text-white hover:bg-white/10 transition-all" aria-label="Ma commande">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <Link href="/cart" className="relative flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-lg text-white hover:bg-white/10 transition-all flex-shrink-0" aria-label="Ma commande">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               {mounted && itemCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-kafe-accent text-kafe-primary-dark text-xs font-medium rounded-full">
+                <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-[16px] sm:min-w-[18px] sm:h-[18px] flex items-center justify-center bg-kafe-accent text-kafe-primary-dark text-[10px] sm:text-xs font-medium rounded-full">
                   {itemCount > 99 ? '99+' : itemCount}
                 </span>
               )}
@@ -202,16 +244,16 @@ export default function EcommerceHeaderFigma() {
             {/* Mobile menu button */}
             <button
               type="button"
-              className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-all"
+              className="lg:hidden p-1.5 sm:p-2 text-white hover:bg-white/10 rounded-lg transition-all flex-shrink-0"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Menu"
             >
               {mobileMenuOpen ? (
-                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}

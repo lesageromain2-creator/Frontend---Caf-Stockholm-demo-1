@@ -268,7 +268,7 @@ export default function Dashboard() {
               <div className="mt-6 rounded-2xl overflow-hidden border shadow-sm max-w-2xl" style={{ borderColor: colors.bgSurface }}>
                 <div className="relative w-full aspect-[3/1] sm:aspect-[4/1] min-h-[100px]">
                   <Image
-                    src="/images/acceuil-4.png"
+                    src="/images/acceuil-3.png"
                     alt=""
                     fill
                     className="object-cover object-center"

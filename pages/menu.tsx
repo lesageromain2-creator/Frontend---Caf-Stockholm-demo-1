@@ -151,6 +151,27 @@ export default function MenuPage() {
             </div>
           </section>
 
+          {/* Barre de navigation par catégories — même style que /carte (boutons kafe, pas rose) */}
+          <nav
+            className="sticky z-30 top-[72px] sm:top-[86px] lg:top-[96px] w-full bg-white border-b border-kafe-border"
+            style={{ boxShadow: '0 2px 12px rgba(13, 42, 92, 0.06)' }}
+            aria-label="Navigation rapide dans la carte"
+          >
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-wrap gap-2 py-3 justify-center sm:justify-start">
+                {categories.map((cat) => (
+                  <a
+                    key={cat.id}
+                    href={`#${cat.slug}`}
+                    className="shrink-0 px-4 py-2 rounded-refined text-small font-heading whitespace-nowrap text-kafe-text hover:bg-kafe-surface transition-colors"
+                  >
+                    {cat.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </nav>
+
           {/* Sections par catégorie */}
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
             {loading ? (
@@ -170,7 +191,7 @@ export default function MenuPage() {
                   <section
                     key={cat.id}
                     id={cat.slug}
-                    className="scroll-mt-28 py-12 md:py-16 first:pt-8"
+                    className="scroll-mt-[9rem] py-12 md:py-16 first:pt-8"
                   >
                     <div
                       className="rounded-2xl overflow-hidden border shadow-sm"

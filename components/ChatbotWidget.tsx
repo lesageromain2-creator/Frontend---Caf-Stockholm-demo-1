@@ -98,7 +98,7 @@ export default function ChatbotWidget() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed z-50 bg-kafe-primary text-white rounded-full w-14 h-14 md:w-16 md:h-16 shadow-2xl flex items-center justify-center hover:opacity-90 transition-opacity bottom-4 right-4 md:bottom-6 md:right-6"
+        className="fixed z-40 bg-kafe-primary text-white rounded-full w-14 h-14 md:w-16 md:h-16 shadow-2xl flex items-center justify-center hover:opacity-90 transition-opacity bottom-4 right-4 md:bottom-6 md:right-6"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         aria-label={isOpen ? 'Fermer Björn' : 'Ouvrir Björn'}
@@ -125,7 +125,7 @@ export default function ChatbotWidget() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed z-40 flex flex-col overflow-hidden bg-white shadow-2xl border-2 border-kafe-primary/20
+            className="fixed z-30 flex flex-col overflow-hidden bg-white shadow-2xl border-2 border-kafe-primary/20
               bottom-24 right-4 left-auto top-auto w-[min(320px,calc(100vw-2rem))] h-[min(520px,calc(100vh-7rem))] rounded-2xl
               md:right-6 md:w-[400px] md:h-[600px] md:max-h-[calc(100vh-6rem)]"
           >

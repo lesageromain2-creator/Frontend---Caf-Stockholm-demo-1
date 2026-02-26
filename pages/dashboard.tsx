@@ -25,6 +25,7 @@ import { toast } from 'react-toastify';
 import { SITE } from '../lib/site-config';
 import { designTokens } from '@/lib/design-tokens';
 import { useAuth } from '@/hooks/useAuth';
+import type { UserAuth } from '@/types';
 import axios from 'axios';
 
 const { colors, fonts, fontSizes, lineHeights, layout } = designTokens;
@@ -64,7 +65,7 @@ function ProfileForm({
 }: {
   user: DashboardUser | null;
   setUser: (u: DashboardUser | null | ((prev: DashboardUser | null) => DashboardUser | null)) => void;
-  updateUser: (u: Record<string, unknown>) => void;
+  updateUser: (u: UserAuth) => void;
   profileSaving: boolean;
   setProfileSaving: (v: boolean) => void;
   profilePhotoFile: File | null;
@@ -119,7 +120,7 @@ function ProfileForm({
       const updatedUser = res.data?.user;
       if (updatedUser) {
         setUser(updatedUser);
-        updateUser(updatedUser);
+        updateUser(updatedUser as UserAuth);
         setProfilePhotoFile(null);
         setProfilePhotoPreview(null);
         toast.success('Profil enregistré');

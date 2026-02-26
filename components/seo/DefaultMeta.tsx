@@ -8,7 +8,8 @@ import { SITE } from '@/lib/site-config';
 
 const DEFAULT_TITLE = `${SITE.name} — ${SITE.tagline}`;
 const DEFAULT_DESCRIPTION = SITE.description;
-const DEFAULT_OG_IMAGE = `${SITE.baseUrl}/og-kafe.jpg`;
+// Image affichée dans l'onglet du navigateur et en prévisualisation (partage, réseaux sociaux)
+const DEFAULT_OG_IMAGE = `${SITE.baseUrl}/images/drapeau%20officiel%20suede.jpg`;
 
 export default function DefaultMeta() {
   return (
@@ -25,6 +26,10 @@ export default function DefaultMeta() {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={DEFAULT_TITLE} />
       <meta name="twitter:description" content={DEFAULT_DESCRIPTION} />
+      <meta name="twitter:image" content={DEFAULT_OG_IMAGE} />
+      {/* Icône de l'onglet (favicon) : drapeau suédois */}
+      <link rel="icon" type="image/jpeg" href="/images/drapeau%20officiel%20suede.jpg" />
+      <link rel="apple-touch-icon" href="/images/drapeau%20officiel%20suede.jpg" />
     </Head>
   );
 }

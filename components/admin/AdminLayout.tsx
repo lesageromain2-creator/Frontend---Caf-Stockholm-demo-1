@@ -58,7 +58,7 @@ export default function AdminLayout({
 
   const checkAuth = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
       if (!token) {
         router.push('/login?redirect=' + encodeURIComponent(router.asPath));
         return;
@@ -69,17 +69,16 @@ export default function AdminLayout({
         timeout: 8000,
       });
 
-      const userData = response.data.user;
-      if (userData) {
-        // Vérifier que l'utilisateur est admin
-        if (userData.role !== 'admin') {
-          router.push('/dashboard'); // Rediriger vers dashboard utilisateur
-          return;
-        }
-        setUser(userData);
-      } else {
+      const userData = response?.data?.user;
+      if (!userData) {
         router.push('/login?redirect=' + encodeURIComponent(router.asPath));
+        return;
       }
+      if (userData.role !== 'admin') {
+        router.push('/dashboard');
+        return;
+      }
+      setUser(userData);
     } catch (error) {
       console.error('Erreur auth:', error);
       router.push('/login?redirect=' + encodeURIComponent(router.asPath));
@@ -90,13 +89,13 @@ export default function AdminLayout({
 
   const fetchNotifications = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
+      if (!token) return;
       const response = await axios.get(`${API_URL}/admin/notifications`, {
         headers: { Authorization: `Bearer ${token}` },
         timeout: 5000,
       });
-
-      if (response.data.success) {
+      if (response?.data?.success && response.data.notifications) {
         setNotifications(response.data.notifications);
       }
     } catch (error) {
@@ -114,25 +113,26 @@ export default function AdminLayout({
 
   return (
     <div className="admin-layout">
-      <AdminSidebar 
+      <AdminSidebar
         activeSection={activeSection}
         notifications={notifications}
         onNavigate={() => setSidebarOpen(false)}
+        isOpen={sidebarOpen}
       />
-      
       <div className="admin-content">
-        <AdminHeader user={user} />
-        
+        <AdminHeader user={user} onMenuClick={() => setSidebarOpen(true)} />
         <main className="admin-main">
           {children}
         </main>
       </div>
-
-      {/* Mobile overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="admin-overlay"
           onClick={() => setSidebarOpen(false)}
+          onKeyDown={(e) => e.key === 'Escape' && setSidebarOpen(false)}
+          role="button"
+          tabIndex={0}
+          aria-label="Fermer le menu"
         />
       )}
 
@@ -152,6 +152,21 @@ export default function AdminLayout({
           padding-top: 80px;
           padding-left: 0;
           padding-right: 0;
+        }
+
+        @media (max-width: 1024px) {
+          .admin-main {
+            padding-top: 64px;
+            padding-left: 12px;
+            padding-right: 12px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .admin-main {
+            padding-left: 12px;
+            padding-right: 12px;
+          }
         }
 
         .admin-overlay {

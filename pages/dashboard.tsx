@@ -1,9 +1,11 @@
 /**
- * Dashboard Client EcamSap - Vêtements de seconde main
+ * Dashboard Client — Kafé Stockholm
+ * Identité visuelle : fond blanc, logo, couleurs café.
  */
 
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -18,12 +20,14 @@ import {
   Truck,
   CheckCircle,
   Clock,
-  Star,
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { SITE } from '../lib/site-config';
+import { designTokens } from '@/lib/design-tokens';
 import { useAuth } from '@/hooks/useAuth';
 import axios from 'axios';
+
+const { colors, fonts, fontSizes, lineHeights, layout } = designTokens;
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -166,10 +170,13 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-kafe-charcoal flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: colors.bgPage }}>
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-kafe-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-kafe-offwhite">Chargement...</p>
+          <div
+            className="w-16 h-16 border-4 rounded-full animate-spin mx-auto mb-4"
+            style={{ borderColor: colors.primaryLink, borderTopColor: 'transparent' }}
+          />
+          <p style={{ fontFamily: fonts.body, color: colors.textGray }}>Chargement...</p>
         </div>
       </div>
     );
@@ -182,170 +189,237 @@ export default function Dashboard() {
         <meta name="description" content={`Gérez vos commandes click & collect — ${SITE.name}`} />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-kafe-charcoal via-kafe-charcoal to-kafe-sage/10">
-        {/* Header */}
-        <header className="border-b border-kafe-pearl/20 bg-kafe-charcoal/50 backdrop-blur-xl">
-          <div className="container mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <Link href="/" className="font-heading text-2xl text-kafe-offwhite">
-                {SITE.name}
+      <div className="min-h-screen" style={{ backgroundColor: colors.white }}>
+        {/* Header — identité Kafé Stockholm */}
+        <header
+          className="border-b sticky top-0 z-30"
+          style={{
+            backgroundColor: colors.white,
+            borderColor: colors.bgSurface,
+            boxShadow: '0 1px 0 rgba(13, 42, 92, 0.06)',
+          }}
+        >
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+            <div className="flex items-center justify-between gap-4">
+              <Link href="/" className="flex items-center gap-3 shrink-0">
+                <div className="relative h-10 w-[44px] sm:h-12 sm:w-[52px]">
+                  <Image
+                    src="/images/logo.png"
+                    alt={SITE.name}
+                    fill
+                    className="object-contain object-left"
+                    sizes="52px"
+                    priority
+                  />
+                </div>
+                <span
+                  className="font-display font-semibold text-lg sm:text-xl hidden xs:block"
+                  style={{ fontFamily: fonts.display, color: colors.primaryDark }}
+                >
+                  {SITE.name}
+                </span>
               </Link>
-              <nav className="flex items-center gap-6">
-                <Link href="/carte" className="text-kafe-offwhite/70 hover:text-kafe-offwhite transition-colors">
+              <nav className="flex items-center gap-3 sm:gap-6">
+                <Link
+                  href="/carte"
+                  className="text-sm sm:text-base transition-colors hover:opacity-80"
+                  style={{ fontFamily: fonts.body, color: colors.textGray }}
+                >
                   La carte
                 </Link>
-                <Link href="/cart" className="text-kafe-offwhite/70 hover:text-kafe-offwhite transition-colors">
+                <Link
+                  href="/cart"
+                  className="text-sm sm:text-base transition-colors"
+                  style={{ fontFamily: fonts.body, color: colors.textGray }}
+                >
                   Ma commande
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 text-kafe-offwhite/70 hover:text-kafe-primary transition-colors"
+                  className="flex items-center gap-2 text-sm sm:text-base transition-colors hover:opacity-80"
+                  style={{ fontFamily: fonts.body, color: colors.primaryLink }}
                 >
-                  <LogOut className="w-4 h-4" />
-                  Déconnexion
+                  <LogOut className="w-4 h-4 shrink-0" />
+                  <span className="hidden sm:inline">Déconnexion</span>
                 </button>
               </nav>
             </div>
           </div>
         </header>
 
-        <div className="container mx-auto px-6 py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" style={{ backgroundColor: colors.bgPage }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: mounted ? 1 : 0, y: mounted ? 0 : 20 }}
             transition={{ duration: 0.6 }}
           >
             {/* Welcome Section */}
-            <div className="mb-8">
-              <h1 className="font-heading text-3xl text-kafe-offwhite mb-2">
-                Hej, {user?.firstname || user?.first_name || (user?.name?.split(' ')[0])}! 👋
+            <div className="mb-6 sm:mb-8">
+              <h1
+                className="font-display font-semibold text-2xl sm:text-3xl mb-2"
+                style={{ fontFamily: fonts.display, color: colors.primaryDark }}
+              >
+                Hej, {user?.firstname || user?.first_name || (user?.name?.split(' ')[0]) || 'vous'} !
               </h1>
-              <p className="text-kafe-offwhite/60">Votre espace commandes click & collect</p>
+              <p style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall, color: colors.textGray, lineHeight: lineHeights.normal }}>
+                Votre espace commandes click & collect
+              </p>
+              {/* Bandeau décoratif — image café adaptée mobile */}
+              <div className="mt-6 rounded-2xl overflow-hidden border shadow-sm max-w-2xl" style={{ borderColor: colors.bgSurface }}>
+                <div className="relative w-full aspect-[3/1] sm:aspect-[4/1] min-h-[100px]">
+                  <Image
+                    src="/images/acceuil-4.png"
+                    alt=""
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 640px) 100vw, 672px"
+                  />
+                  <div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{ background: 'linear-gradient(to right, rgba(13,42,92,0.25), rgba(13,42,92,0.15))' }}
+                  >
+                    <span
+                      className="font-display font-semibold text-white text-lg sm:text-xl drop-shadow-md"
+                      style={{ fontFamily: fonts.display }}
+                    >
+                      {SITE.tagline}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
               {/* Sidebar */}
               <div className="lg:col-span-1">
-                <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6 sticky top-6">
+                <div
+                  className="rounded-2xl overflow-hidden p-6 sticky top-24 lg:top-28 border shadow-sm"
+                  style={{
+                    backgroundColor: colors.white,
+                    borderColor: colors.bgSurface,
+                    boxShadow: layout.cardShadow,
+                  }}
+                >
                   <div className="mb-6 text-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-kafe-primary to-kafe-sage rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-2xl">
-                      {user?.firstname?.charAt(0) || user?.first_name?.charAt(0) || 'U'}
+                    <div
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-xl sm:text-2xl"
+                      style={{ backgroundColor: colors.primaryDark }}
+                    >
+                      {user?.firstname?.charAt(0) || user?.first_name?.charAt(0) || user?.name?.charAt(0) || 'U'}
                     </div>
-                    <h3 className="font-heading text-lg text-kafe-offwhite">{user?.name || user?.email}</h3>
-                    <p className="text-sm text-kafe-offwhite/60">{user?.email}</p>
+                    <h3 className="font-display font-semibold truncate px-2" style={{ fontFamily: fonts.display, fontSize: fontSizes.body, color: colors.textDark }}>
+                      {user?.name || user?.email}
+                    </h3>
+                    <p className="text-sm truncate px-2 mt-1" style={{ fontFamily: fonts.body, color: colors.textMuted }}>
+                      {user?.email}
+                    </p>
                   </div>
 
-                  <nav className="space-y-2">
-                    <button
-                      onClick={() => setActiveTab('overview')}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                        activeTab === 'overview'
-                          ? 'bg-kafe-primary text-white font-medium'
-                          : 'text-kafe-offwhite hover:bg-white/10'
-                      }`}
-                    >
-                      <ShoppingBag className="w-5 h-5" />
-                      <span>Vue d'ensemble</span>
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('orders')}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                        activeTab === 'orders'
-                          ? 'bg-kafe-primary text-white font-medium'
-                          : 'text-kafe-offwhite hover:bg-white/10'
-                      }`}
-                    >
-                      <Package className="w-5 h-5" />
-                      <span>Mes commandes click & collect</span>
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('addresses')}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                        activeTab === 'addresses'
-                          ? 'bg-kafe-primary text-white font-medium'
-                          : 'text-kafe-offwhite hover:bg-white/10'
-                      }`}
-                    >
-                      <MapPin className="w-5 h-5" />
-                      <span>Adresses</span>
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('wishlist')}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                        activeTab === 'wishlist'
-                          ? 'bg-kafe-primary text-white font-medium'
-                          : 'text-kafe-offwhite hover:bg-white/10'
-                      }`}
-                    >
-                      <Heart className="w-5 h-5" />
-                      <span>Mes favoris</span>
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('profile')}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                        activeTab === 'profile'
-                          ? 'bg-kafe-primary text-white font-medium'
-                          : 'text-kafe-offwhite hover:bg-white/10'
-                      }`}
-                    >
-                      <User className="w-5 h-5" />
-                      <span>Mon profil</span>
-                    </button>
+                  <nav className="space-y-1">
+                    {[
+                      { id: 'overview', label: "Vue d'ensemble", icon: ShoppingBag },
+                      { id: 'orders', label: 'Mes commandes click & collect', icon: Package },
+                      { id: 'addresses', label: 'Adresses', icon: MapPin },
+                      { id: 'wishlist', label: 'Mes favoris', icon: Heart },
+                      { id: 'profile', label: 'Mon profil', icon: User },
+                    ].map(({ id, label, icon: Icon }) => (
+                      <button
+                        key={id}
+                        onClick={() => setActiveTab(id)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all ${
+                          activeTab === id ? 'text-white font-medium' : 'hover:bg-kafe-bg-surface'
+                        }`}
+                        style={{
+                          fontFamily: fonts.body,
+                          fontSize: fontSizes.bodySmall,
+                          backgroundColor: activeTab === id ? colors.primaryDark : 'transparent',
+                          color: activeTab === id ? colors.white : colors.textGray,
+                        }}
+                      >
+                        <Icon className="w-5 h-5 shrink-0" />
+                        <span>{label}</span>
+                      </button>
+                    ))}
                   </nav>
                 </div>
               </div>
-
               {/* Main Content */}
               <div className="lg:col-span-3">
                 {/* Vue d'ensemble */}
                 {activeTab === 'overview' && (
                   <div className="space-y-6">
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div
+                        className="rounded-2xl border p-5 sm:p-6"
+                        style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
+                      >
                         <div className="flex items-center justify-between mb-2">
-                          <Package className="w-8 h-8 text-kafe-primary" />
+                          <Package className="w-8 h-8" style={{ color: colors.primaryDark }} />
                         </div>
-                        <h3 className="text-2xl font-bold text-kafe-offwhite">{orders.length}</h3>
-                        <p className="text-kafe-offwhite/60 text-sm">Commandes click & collect</p>
+                        <h3 className="text-2xl font-bold" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
+                          {orders.length}
+                        </h3>
+                        <p style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall, color: colors.textGray }}>
+                          Commandes click & collect
+                        </p>
                       </div>
-                      <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6">
+                      <div
+                        className="rounded-2xl border p-5 sm:p-6"
+                        style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
+                      >
                         <div className="flex items-center justify-between mb-2">
-                          <Clock className="w-8 h-8 text-kafe-sage" />
+                          <Clock className="w-8 h-8" style={{ color: colors.primaryLink }} />
                         </div>
-                        <h3 className="text-2xl font-bold text-kafe-offwhite">
+                        <h3 className="text-2xl font-bold" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
                           {orders.filter((o) => o.status === 'pending' || o.status === 'processing').length}
                         </h3>
-                        <p className="text-kafe-offwhite/60 text-sm">À venir / Prêt</p>
+                        <p style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall, color: colors.textGray }}>
+                          À venir / Prêt
+                        </p>
                       </div>
-                      <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6">
+                      <div
+                        className="rounded-2xl border p-5 sm:p-6"
+                        style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
+                      >
                         <div className="flex items-center justify-between mb-2">
-                          <Heart className="w-8 h-8 text-red-400" />
+                          <Heart className="w-8 h-8" style={{ color: colors.accent }} />
                         </div>
-                        <h3 className="text-2xl font-bold text-kafe-offwhite">{wishlist.length}</h3>
-                        <p className="text-kafe-offwhite/60 text-sm">Favoris</p>
+                        <h3 className="text-2xl font-bold" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
+                          {wishlist.length}
+                        </h3>
+                        <p style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall, color: colors.textGray }}>
+                          Favoris
+                        </p>
                       </div>
                     </div>
 
                     {/* Dernières commandes */}
-                    <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6">
-                      <div className="flex items-center justify-between mb-6">
-                        <h2 className="font-heading text-xl text-kafe-offwhite">Dernières commandes</h2>
+                    <div
+                      className="rounded-2xl border p-6 sm:p-8"
+                      style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                        <h2 className="font-display text-xl font-semibold" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
+                          Dernières commandes
+                        </h2>
                         <button
                           onClick={() => setActiveTab('orders')}
-                          className="text-kafe-primary hover:text-kafe-primary/80 text-sm flex items-center gap-1"
+                          className="text-sm flex items-center gap-1 font-medium transition-opacity hover:opacity-80"
+                          style={{ fontFamily: fonts.body, color: colors.primaryLink }}
                         >
                           Voir tout
                           <ChevronRight className="w-4 h-4" />
                         </button>
                       </div>
                       {orders.length === 0 ? (
-                        <div className="text-center py-12">
-                          <Package className="w-16 h-16 text-kafe-offwhite/20 mx-auto mb-4" />
-                          <p className="text-kafe-offwhite/60 mb-4">Aucune commande pour le moment</p>
+                        <div className="text-center py-10 sm:py-12">
+                          <Package className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 opacity-40" style={{ color: colors.primaryDark }} />
+                          <p className="mb-4" style={{ fontFamily: fonts.body, color: colors.textGray }}>Aucune commande pour le moment</p>
                           <Link
                             href="/carte"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-kafe-primary text-white rounded-refined font-medium hover:bg-kafe-primary/90 transition-all"
+                            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-white transition-opacity hover:opacity-90"
+                            style={{ backgroundColor: colors.primaryDark, fontFamily: fonts.body }}
                           >
                             <ShoppingBag className="w-5 h-5" />
                             Voir la carte
@@ -356,22 +430,27 @@ export default function Dashboard() {
                           {orders.slice(0, 3).map((order) => (
                             <div
                               key={order.id}
-                              className="flex items-center justify-between p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-all border border-kafe-pearl/10"
+                              className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border transition-colors hover:bg-opacity-80"
+                              style={{ backgroundColor: colors.bgCream, borderColor: colors.bgSurface }}
                             >
                               <div className="flex items-center gap-4">
-                                <div className={`${getStatusColor(order.status)}`}>
+                                <div className={getStatusColor(order.status)}>
                                   {getStatusIcon(order.status)}
                                 </div>
                                 <div>
-                                  <p className="text-kafe-offwhite font-medium">Commande #{order.order_number}</p>
-                                  <p className="text-kafe-offwhite/60 text-sm">
+                                  <p className="font-medium" style={{ fontFamily: fonts.body, color: colors.textDark }}>
+                                    Commande #{order.order_number}
+                                  </p>
+                                  <p style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall, color: colors.textGray }}>
                                     {new Date(order.created_at).toLocaleDateString('fr-FR')}
                                   </p>
                                 </div>
                               </div>
                               <div className="text-right">
-                                <p className="text-kafe-offwhite font-bold">{order.total_amount}€</p>
-                                <p className={`text-sm ${getStatusColor(order.status)}`}>
+                                <p className="font-bold" style={{ fontFamily: fonts.body, color: colors.primaryDark }}>
+                                  {order.total_amount}€
+                                </p>
+                                <p className={`text-sm ${getStatusColor(order.status)}`} style={{ fontFamily: fonts.body }}>
                                   {getStatusLabel(order.status)}
                                 </p>
                               </div>
@@ -385,24 +464,32 @@ export default function Dashboard() {
 
                 {/* Mes commandes */}
                 {activeTab === 'orders' && (
-                  <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6">
-                    <h2 className="font-heading text-xl text-kafe-offwhite mb-6">Mes commandes click & collect</h2>
+                  <div
+                    className="rounded-2xl border p-6 sm:p-8"
+                    style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
+                  >
+                    <h2 className="font-display text-xl font-semibold mb-6" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
+                      Mes commandes click & collect
+                    </h2>
                     {orders.length === 0 ? (
                       <div className="text-center py-12">
-                        <Package className="w-16 h-16 text-kafe-offwhite/20 mx-auto mb-4" />
-                        <p className="text-kafe-offwhite/60">Aucune commande</p>
+                        <Package className="w-16 h-16 mx-auto mb-4 opacity-40" style={{ color: colors.primaryDark }} />
+                        <p style={{ fontFamily: fonts.body, color: colors.textGray }}>Aucune commande</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
                         {orders.map((order) => (
                           <div
                             key={order.id}
-                            className="p-6 rounded-lg bg-white/5 hover:bg-white/10 transition-all border border-kafe-pearl/10"
+                            className="p-5 sm:p-6 rounded-xl border transition-colors"
+                            style={{ backgroundColor: colors.bgCream, borderColor: colors.bgSurface }}
                           >
-                            <div className="flex items-start justify-between mb-4">
+                            <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
                               <div>
-                                <h3 className="text-kafe-offwhite font-bold text-lg">#{order.order_number}</h3>
-                                <p className="text-kafe-offwhite/60 text-sm">
+                                <h3 className="font-bold text-lg" style={{ fontFamily: fonts.body, color: colors.primaryDark }}>
+                                  #{order.order_number}
+                                </h3>
+                                <p style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall, color: colors.textGray }}>
                                   {new Date(order.created_at).toLocaleDateString('fr-FR', {
                                     day: 'numeric',
                                     month: 'long',
@@ -411,25 +498,30 @@ export default function Dashboard() {
                                 </p>
                               </div>
                               <span
-                                className={`px-4 py-2 rounded-full text-sm font-medium ${
-                                  order.status === 'completed' || order.status === 'delivered'
-                                    ? 'bg-green-500/20 text-green-400'
+                                className="px-4 py-2 rounded-full text-sm font-medium shrink-0"
+                                style={{
+                                  fontFamily: fonts.body,
+                                  ...(order.status === 'completed' || order.status === 'delivered'
+                                    ? { backgroundColor: colors.successBg, color: colors.success }
                                     : order.status === 'cancelled'
-                                    ? 'bg-red-500/20 text-red-400'
-                                    : 'bg-yellow-500/20 text-yellow-400'
-                                }`}
+                                    ? { backgroundColor: '#FFEBEE', color: '#C62828' }
+                                    : { backgroundColor: '#FFF8E1', color: '#F9A825' }),
+                                }}
                               >
                                 {getStatusLabel(order.status)}
                               </span>
                             </div>
-                            <div className="flex items-center justify-between">
-                              <div className="text-kafe-offwhite/80">
-                                <p className="text-sm">Montant total</p>
-                                <p className="text-2xl font-bold text-kafe-offwhite">{order.total_amount}€</p>
+                            <div className="flex flex-wrap items-center justify-between gap-4">
+                              <div>
+                                <p className="text-sm" style={{ fontFamily: fonts.body, color: colors.textGray }}>Montant total</p>
+                                <p className="text-2xl font-bold" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
+                                  {order.total_amount}€
+                                </p>
                               </div>
                               <Link
                                 href={`/orders/${order.id}`}
-                                className="px-6 py-2 bg-kafe-primary/20 text-kafe-primary rounded-refined font-medium hover:bg-kafe-primary/30 transition-all"
+                                className="px-5 py-2.5 rounded-xl font-medium transition-opacity hover:opacity-90"
+                                style={{ backgroundColor: colors.primaryLink, color: colors.white, fontFamily: fonts.body }}
                               >
                                 Détails
                               </Link>
@@ -443,54 +535,78 @@ export default function Dashboard() {
 
                 {/* Autres tabs */}
                 {activeTab === 'addresses' && (
-                  <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6">
-                    <h2 className="font-heading text-xl text-kafe-offwhite mb-6">Mes adresses</h2>
+                  <div
+                    className="rounded-2xl border p-6 sm:p-8"
+                    style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
+                  >
+                    <h2 className="font-display text-xl font-semibold mb-6" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
+                      Mes adresses
+                    </h2>
                     <div className="text-center py-12">
-                      <MapPin className="w-16 h-16 text-kafe-offwhite/20 mx-auto mb-4" />
-                      <p className="text-kafe-offwhite/60">Fonctionnalité en cours de développement</p>
+                      <MapPin className="w-16 h-16 mx-auto mb-4 opacity-40" style={{ color: colors.primaryDark }} />
+                      <p style={{ fontFamily: fonts.body, color: colors.textGray }}>Fonctionnalité en cours de développement</p>
                     </div>
                   </div>
                 )}
 
                 {activeTab === 'wishlist' && (
-                  <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6">
-                    <h2 className="font-heading text-xl text-kafe-offwhite mb-6">Mes favoris</h2>
+                  <div
+                    className="rounded-2xl border p-6 sm:p-8"
+                    style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
+                  >
+                    <h2 className="font-display text-xl font-semibold mb-6" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
+                      Mes favoris
+                    </h2>
                     <div className="text-center py-12">
-                      <Heart className="w-16 h-16 text-kafe-offwhite/20 mx-auto mb-4" />
-                      <p className="text-kafe-offwhite/60">Aucun favori pour le moment</p>
+                      <Heart className="w-16 h-16 mx-auto mb-4 opacity-40" style={{ color: colors.accent }} />
+                      <p style={{ fontFamily: fonts.body, color: colors.textGray }}>Aucun favori pour le moment</p>
                     </div>
                   </div>
                 )}
 
                 {activeTab === 'profile' && (
-                  <div className="bg-white/5 backdrop-blur-xl rounded-refined border border-kafe-pearl/20 p-6">
-                    <h2 className="font-heading text-xl text-kafe-offwhite mb-6">Mon profil</h2>
-                    <div className="space-y-4">
+                  <div
+                    className="rounded-2xl border p-6 sm:p-8"
+                    style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
+                  >
+                    <h2 className="font-display text-xl font-semibold mb-6" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
+                      Mon profil
+                    </h2>
+                    <div className="space-y-4 max-w-md">
                       <div>
-                        <label className="block text-sm font-medium text-kafe-offwhite/60 mb-2">Nom complet</label>
+                        <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
+                          Nom complet
+                        </label>
                         <input
                           type="text"
                           value={user?.name || ''}
                           disabled
-                          className="w-full px-4 py-3 bg-white/10 border border-kafe-pearl/20 rounded-refined text-kafe-offwhite"
+                          className="w-full px-4 py-3 rounded-xl border"
+                          style={{ fontFamily: fonts.body, backgroundColor: colors.bgCream, borderColor: colors.bgSurface, color: colors.textDark }}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-kafe-offwhite/60 mb-2">Email</label>
+                        <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
+                          Email
+                        </label>
                         <input
                           type="email"
                           value={user?.email || ''}
                           disabled
-                          className="w-full px-4 py-3 bg-white/10 border border-kafe-pearl/20 rounded-refined text-kafe-offwhite"
+                          className="w-full px-4 py-3 rounded-xl border"
+                          style={{ fontFamily: fonts.body, backgroundColor: colors.bgCream, borderColor: colors.bgSurface, color: colors.textDark }}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-kafe-offwhite/60 mb-2">Téléphone</label>
+                        <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
+                          Téléphone
+                        </label>
                         <input
                           type="tel"
                           value={user?.phone || ''}
                           disabled
-                          className="w-full px-4 py-3 bg-white/10 border border-kafe-pearl/20 rounded-refined text-kafe-offwhite"
+                          className="w-full px-4 py-3 rounded-xl border"
+                          style={{ fontFamily: fonts.body, backgroundColor: colors.bgCream, borderColor: colors.bgSurface, color: colors.textDark }}
                         />
                       </div>
                     </div>

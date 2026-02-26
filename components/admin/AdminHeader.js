@@ -1,7 +1,7 @@
 // frontend/components/admin/AdminHeader.js - Kafé Stockholm Admin
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Bell, User, ChevronDown, Settings, LogOut } from 'lucide-react';
+import { Bell, User, ChevronDown, Settings, LogOut, Menu } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { logout } from '../../utils/api';
 import { toast } from 'react-toastify';
@@ -13,10 +13,9 @@ const CLIENT_NAV = [
   { label: 'La carte', href: '/carte' },
 ];
 
-export default function AdminHeader({ user }) {
+export default function AdminHeader({ user, onMenuClick }) {
   const router = useRouter();
   const [notifications, setNotifications] = useState([]);
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   useEffect(() => {
@@ -45,6 +44,16 @@ export default function AdminHeader({ user }) {
   return (
     <header className="admin-header">
       <div className="header-content">
+        {onMenuClick && (
+          <button
+            type="button"
+            className="menu-toggle"
+            onClick={onMenuClick}
+            aria-label="Ouvrir le menu"
+          >
+            <Menu size={24} />
+          </button>
+        )}
         <nav className="client-nav" aria-label="Pages côté client">
           <span className="client-nav-label">Voir le site :</span>
           {CLIENT_NAV.map((item) => (
@@ -62,37 +71,16 @@ export default function AdminHeader({ user }) {
 
         <div className="header-actions">
           <div className="notifications-container">
-            <button
+            <Link
+              href="/admin/demo-info"
               className="icon-button"
-              onClick={() => setShowNotifications(!showNotifications)}
+              aria-label="Notifications et informations"
             >
               <Bell size={20} />
               {notifications.length > 0 && (
                 <span className="notification-badge">{notifications.length}</span>
               )}
-            </button>
-
-            {showNotifications && (
-              <div className="notifications-dropdown">
-                <div className="dropdown-header">
-                  <h3>Notifications</h3>
-                </div>
-                {notifications.length === 0 ? (
-                  <div className="empty-notifications">
-                    <p>Aucune notification</p>
-                  </div>
-                ) : (
-                  <div className="notifications-list">
-                    {notifications.map((notif, idx) => (
-                      <div key={idx} className="notification-item">
-                        <p className="notification-text">{notif.message}</p>
-                        <span className="notification-time">{notif.time}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+            </Link>
           </div>
 
           <div className="profile-container">
@@ -116,11 +104,11 @@ export default function AdminHeader({ user }) {
 
             {showProfileMenu && (
               <div className="profile-dropdown">
-                <div className="dropdown-item" onClick={() => router.push('/admin/profile')}>
+                <div className="dropdown-item" onClick={() => { setShowProfileMenu(false); router.push('/admin/ecommerce/dashboard'); }}>
                   <User size={16} />
                   <span>Mon profil</span>
                 </div>
-                <div className="dropdown-item" onClick={() => router.push('/admin/settings')}>
+                <div className="dropdown-item" onClick={() => { setShowProfileMenu(false); router.push('/admin/demo-info'); }}>
                   <Settings size={16} />
                   <span>Paramètres</span>
                 </div>
@@ -155,6 +143,10 @@ export default function AdminHeader({ user }) {
           align-items: center;
           justify-content: space-between;
           gap: 24px;
+        }
+
+        .menu-toggle {
+          display: none;
         }
 
         .quick-access,
@@ -391,6 +383,58 @@ export default function AdminHeader({ user }) {
         @media (max-width: 1024px) {
           .admin-header {
             left: 0;
+            padding: 0 16px;
+          }
+
+          .menu-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            margin-right: 8px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            color: #334155;
+            cursor: pointer;
+            flex-shrink: 0;
+          }
+
+          .menu-toggle:hover {
+            background: #e2e8f0;
+          }
+
+          .client-nav {
+            display: none;
+          }
+
+          .header-actions {
+            gap: 8px;
+          }
+
+          .profile-info {
+            display: none;
+          }
+
+          .profile-button {
+            padding: 6px 10px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .admin-header {
+            height: 64px;
+            padding: 0 12px;
+          }
+
+          .header-content {
+            gap: 12px;
+          }
+
+          .icon-button {
+            width: 40px;
+            height: 40px;
           }
         }
       `}</style>

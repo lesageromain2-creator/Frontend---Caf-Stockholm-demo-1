@@ -4,6 +4,7 @@
  */
 
 import Head from 'next/head';
+import Image from 'next/image';
 import EcommerceLayout from '@/components/ecommerce/EcommerceLayout';
 import NordicDivider from '@/components/cafe/NordicDivider';
 import { SITE } from '@/lib/site-config';
@@ -64,8 +65,17 @@ export default function NotreHistoirePage() {
           {/* Un café, une cantine, une âme */}
           <section className="mb-14 lg:mb-20">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-              <div className="rounded-2xl overflow-hidden shadow-md max-w-sm mx-auto lg:max-w-none lg:mx-0">
-                <img src="/images/acceuil-4.png" alt="Kafé Stockholm, rue Saint-Polycarpe" className="w-full h-auto object-cover" />
+              <div className="rounded-2xl overflow-hidden shadow-md max-w-sm mx-auto lg:max-w-none lg:mx-0 w-full">
+                <div className="relative w-full aspect-[3/2] sm:aspect-[4/3]">
+                  <Image
+                    src="/images/drapeau%20officiel%20suede.jpg"
+                    alt="Drapeau officiel de la Suède — symbole de l'identité du Kafé Stockholm"
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 45vw"
+                    priority={false}
+                  />
+                </div>
               </div>
               <div>
                 <h2

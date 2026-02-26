@@ -17,7 +17,7 @@ import {
   LogOut
 } from 'lucide-react';
 
-export default function AdminSidebar({ activeSection, onNavigate, notifications = {} }) {
+export default function AdminSidebar({ activeSection, onNavigate, notifications = {}, isOpen = false }) {
   const router = useRouter();
 
   const menuItems = [
@@ -46,7 +46,7 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
   };
 
   return (
-    <aside className="admin-sidebar">
+    <aside className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="logo">
           <span className="logo-icon">K</span>

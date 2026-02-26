@@ -308,25 +308,25 @@ export default function EditProductPage() {
       </Head>
 
       <div className="min-h-screen bg-white">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+          <div className="mb-6 sm:mb-8">
             <Link
               href="/admin/ecommerce/products"
-              className="text-gray-600 hover:text-gray-900 mb-4 inline-flex items-center gap-2"
+              className="text-gray-600 hover:text-gray-900 mb-3 sm:mb-4 inline-flex items-center gap-2 text-sm"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               Retour aux produits
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900">Modifier le produit</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Modifier le produit</h1>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-bold mb-4">Informations générales</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                  <h2 className="text-lg sm:text-xl font-bold mb-4">Informations générales</h2>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">Nom du produit *</label>
@@ -356,8 +356,8 @@ export default function EditProductPage() {
                         {/* Image actuelle : toujours visible avec URL résolue (backend) */}
                         <div>
                           <p className="text-xs text-gray-500 mb-2">Image actuelle</p>
-                          <div className="flex items-start gap-4 flex-wrap">
-                            <div className="w-40 h-40 rounded-lg border-2 border-gray-200 bg-gray-50 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                          <div className="flex items-start gap-3 sm:gap-4 flex-wrap">
+                            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-lg border-2 border-gray-200 bg-gray-50 overflow-hidden flex-shrink-0 flex items-center justify-center">
                               {displayImageUrl && !imageLoadError ? (
                                 <img
                                   src={displayImageUrl}
@@ -441,8 +441,8 @@ export default function EditProductPage() {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-bold mb-4">Prix et stock</h2>
+                <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                  <h2 className="text-lg sm:text-xl font-bold mb-4">Prix et stock</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">SKU *</label>
@@ -528,8 +528,8 @@ export default function EditProductPage() {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-bold mb-4">SEO</h2>
+                <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                  <h2 className="text-lg sm:text-xl font-bold mb-4">SEO</h2>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium mb-1">Meta titre</label>
@@ -567,8 +567,8 @@ export default function EditProductPage() {
                 </div>
               </div>
 
-              <div className="lg:col-span-1 space-y-6">
-                <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="lg:col-span-1 space-y-4 sm:space-y-6">
+                <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
                   <h3 className="font-bold mb-4">Publication</h3>
                   <div className="space-y-4">
                     <div>
@@ -607,7 +607,7 @@ export default function EditProductPage() {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-6">
+                <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
                   <h3 className="font-bold mb-4">Organisation</h3>
                   <div className="space-y-4">
                     <div>
@@ -641,18 +641,18 @@ export default function EditProductPage() {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-md p-6 space-y-3">
+                <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 space-y-3">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    className="w-full bg-blue-600 text-white py-2.5 sm:py-3 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm sm:text-base"
                   >
                     {loading ? 'Enregistrement...' : 'Enregistrer les modifications'}
                   </button>
-                  <Link href="/admin/ecommerce/products">
+                  <Link href="/admin/ecommerce/products" className="block">
                     <button
                       type="button"
-                      className="w-full border-2 border-gray-300 py-3 rounded-lg font-bold hover:border-gray-400 transition-all"
+                      className="w-full border-2 border-gray-300 py-2.5 sm:py-3 rounded-lg font-bold hover:border-gray-400 transition-all text-sm sm:text-base"
                     >
                       Annuler
                     </button>
@@ -661,7 +661,7 @@ export default function EditProductPage() {
                     type="button"
                     onClick={handleDelete}
                     disabled={loading}
-                    className="w-full bg-red-600 text-white py-3 rounded-lg font-bold hover:bg-red-700 disabled:opacity-50 transition-all"
+                    className="w-full bg-red-600 text-white py-2.5 sm:py-3 rounded-lg font-bold hover:bg-red-700 disabled:opacity-50 transition-all text-sm sm:text-base"
                   >
                     Supprimer le produit
                   </button>

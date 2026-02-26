@@ -68,7 +68,7 @@ const MEDIA_ARTICLES_STOCKHOLM = [
   { name: 'Restaurant Guru', url: 'https://fr.restaurantguru.com/Kafe-Stockholm-Lyon', src: '/images/Media articles stockholm/restaurant-guru.png' },
   { name: 'CityCrunch', url: 'https://lyon.citycrunch.fr/on-a-teste-kafe-stockholm-le-petit-bout-de-suede-de-lyon/2023/03/23/', src: '/images/Media articles stockholm/CityCrunch.png' },
   { name: 'TripAdvisor', url: 'https://www.tripadvisor.fr/Restaurant_Review-g187265-d25210557-Reviews-Kafe_Stockholm-Lyon_Rhone_Auvergne_Rhone_Alpes.html', src: '/images/Media articles stockholm/tripadvisor.png' },
-  { name: 'Lyon Éco & Culture', url: 'https://www.lyonecoetculture.fr/kafe-stockholm-le-seul-cafe-scandinave-de-lyon-portrait/', src: '/images/Media articles stockholm/le bonbon.png' },
+  { name: 'Le Bonbon', url: 'https://www.lebonbon.fr/lyon/cuisine-du-monde/kafe-stockholm-pause-suedoise-de-lyon/', src: '/images/Media articles stockholm/le bonbon.png' },
   { name: 'Foodetoi Lyon', url: 'https://foodetoilyon.com/kafe-stockholm-cafe-suedois-lyon1/', src: '/images/Media articles stockholm/foodetoi-lyon.png' },
   { name: 'À la lyonnaise', url: 'https://www.alalyonnaise.fr/food/anna-et-katarina-du-kafe-stockholm', src: '/images/Media articles stockholm/a-la-lyonnaise.png' },
   { name: 'Girls Take Lyon', url: 'https://girlstakelyon.com/kafe-stockholm-cafe-suedois-a-lyon/', src: '/images/Media articles stockholm/girls-take.png' },

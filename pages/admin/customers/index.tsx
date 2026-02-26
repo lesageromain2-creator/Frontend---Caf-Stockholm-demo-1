@@ -21,6 +21,7 @@ interface Customer {
   phone: string | null;
   created_at: string;
   last_login_at: string | null;
+  avatar_url?: string | null;
   order_count: string;
   total_spent: string;
 }
@@ -135,8 +136,10 @@ export default function CustomersPage() {
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-kafe-primary/10 flex items-center justify-center text-kafe-primary font-semibold">
-                            {(c.name || c.email).charAt(0).toUpperCase()}
+                          <div className="w-10 h-10 rounded-full bg-kafe-primary/10 flex items-center justify-center text-kafe-primary font-semibold overflow-hidden bg-cover bg-center shrink-0"
+                            style={c.avatar_url ? { backgroundImage: `url(${c.avatar_url})` } : undefined}
+                          >
+                            {!c.avatar_url && (c.name || c.email).charAt(0).toUpperCase()}
                           </div>
                           <div>
                             <p className="text-gray-900 font-medium">{c.name || '—'}</p>

@@ -1,5 +1,6 @@
 // frontend/components/admin/AdminSidebar.js
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import { 
   LayoutDashboard, 
   Package, 
@@ -49,7 +50,9 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
     <aside className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="logo">
-          <span className="logo-icon">K</span>
+          <div className="logo-icon">
+            <Image src="/images/logo.png" alt="Kafé Stockholm" width={40} height={40} className="logo-img" />
+          </div>
           <span className="logo-text">Kafé Stockholm</span>
         </div>
         <span className="admin-badge">Admin</span>
@@ -111,14 +114,19 @@ export default function AdminSidebar({ activeSection, onNavigate, notifications 
         .logo-icon {
           width: 40px;
           height: 40px;
-          background: linear-gradient(135deg, #1A4A8A, #2E6DB4);
           border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-weight: 900;
-          font-size: 18px;
-          color: white;
+          overflow: hidden;
+          background: #fff;
+          border: 1px solid #e5e7eb;
+        }
+
+        .logo-icon :global(.logo-img) {
+          object-fit: contain;
+          width: 100%;
+          height: 100%;
         }
 
         .logo-text {

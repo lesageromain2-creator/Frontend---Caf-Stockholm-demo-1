@@ -60,6 +60,7 @@ export default function MenuPage() {
   const [productsByCategory, setProductsByCategory] = useState<Record<string, Product[]>>({});
   const [loading, setLoading] = useState(true);
   const [sectionImageErrors, setSectionImageErrors] = useState<Set<string>>(new Set());
+  const [showPlats, setShowPlats] = useState(true);
 
   useEffect(() => {
     axios
@@ -118,12 +119,12 @@ export default function MenuPage() {
 
       <EcommerceLayout>
         <div className="w-full pt-[136px]" style={{ background: colors.bgPage }}>
-          {/* Hero titre */}
+          {/* Hero titre — sans image de fond, drapeau suédois en haut à droite */}
           <section className="relative w-full overflow-hidden py-16 md:py-24">
             <img
-              src="/images/menu/menu_boissons_chaudes_matcha_bio.jpg"
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover opacity-30"
+              src="/images/drapeau%20officiel%20suede.jpg"
+              alt="Drapeau suédois"
+              className="absolute top-6 right-6 w-16 h-auto md:w-20 object-contain drop-shadow-md"
             />
             <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
               <h1
@@ -158,16 +159,27 @@ export default function MenuPage() {
             aria-label="Navigation rapide dans la carte"
           >
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-wrap gap-2 py-3 justify-center sm:justify-start">
-                {categories.map((cat) => (
-                  <a
-                    key={cat.id}
-                    href={`#${cat.slug}`}
-                    className="shrink-0 px-4 py-2 rounded-refined text-small font-heading whitespace-nowrap text-kafe-text hover:bg-kafe-surface transition-colors"
-                  >
-                    {cat.name}
-                  </a>
-                ))}
+              <div className="flex flex-wrap items-center gap-2 py-3 justify-center sm:justify-between">
+                <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                  {categories.map((cat) => (
+                    <a
+                      key={cat.id}
+                      href={`#${cat.slug}`}
+                      className="shrink-0 px-4 py-2 rounded-refined text-small font-heading whitespace-nowrap text-kafe-text hover:bg-kafe-surface transition-colors"
+                    >
+                      {cat.name}
+                    </a>
+                  ))}
+                </div>
+                <label className="shrink-0 flex items-center gap-2 cursor-pointer px-3 py-2 rounded-refined text-kafe-text hover:bg-kafe-surface transition-colors" style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall }}>
+                  <input
+                    type="checkbox"
+                    checked={showPlats}
+                    onChange={(e) => setShowPlats(e.target.checked)}
+                    className="w-4 h-4 rounded border-kafe-border text-kafe-primary focus:ring-kafe-primary"
+                  />
+                  <span>Afficher les plats</span>
+                </label>
               </div>
             </div>
           </nav>
@@ -229,7 +241,11 @@ export default function MenuPage() {
                           </div>
                         </div>
                         <div className="lg:col-span-3 p-6 md:p-8">
-                          {products.length === 0 ? (
+                          {!showPlats ? (
+                            <p style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall, color: colors.textMuted }}>
+                              Détails des plats sur place ou en click & collect.
+                            </p>
+                          ) : products.length === 0 ? (
                             <p style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall, color: colors.textMuted }}>
                               Bientôt au menu.
                             </p>

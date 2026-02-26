@@ -3,7 +3,7 @@
  * Identité visuelle : fond blanc, logo, couleurs café.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -34,9 +34,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 interface DashboardUser {
   firstname?: string;
   first_name?: string;
+  lastname?: string;
   name?: string;
   email?: string;
   phone?: string;
+  avatar_url?: string | null;
 }
 
 interface DashboardOrder {
@@ -47,10 +49,197 @@ interface DashboardOrder {
   total_amount: number;
 }
 
+// ——— Formulaire profil (éditable + photo) ———
+function ProfileForm({
+  user,
+  setUser,
+  updateUser,
+  profileSaving,
+  setProfileSaving,
+  profilePhotoFile,
+  setProfilePhotoFile,
+  profilePhotoPreview,
+  setProfilePhotoPreview,
+  apiUrl,
+}: {
+  user: DashboardUser | null;
+  setUser: (u: DashboardUser | null | ((prev: DashboardUser | null) => DashboardUser | null)) => void;
+  updateUser: (u: Record<string, unknown>) => void;
+  profileSaving: boolean;
+  setProfileSaving: (v: boolean) => void;
+  profilePhotoFile: File | null;
+  setProfilePhotoFile: (f: File | null) => void;
+  profilePhotoPreview: string | null;
+  setProfilePhotoPreview: (s: string | null) => void;
+  apiUrl: string;
+}) {
+  const [firstname, setFirstname] = useState(user?.firstname || user?.first_name || '');
+  const [lastname, setLastname] = useState(user?.lastname || '');
+  const [phone, setPhone] = useState(user?.phone || '');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setFirstname(user?.firstname || user?.first_name || '');
+    setLastname(user?.lastname || '');
+    setPhone(user?.phone || '');
+  }, [user?.firstname, user?.first_name, user?.lastname, user?.phone, user?.phone]);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('Choisissez une image (JPG, PNG, WebP ou GIF)');
+      return;
+    }
+    setProfilePhotoFile(file);
+    const reader = new FileReader();
+    reader.onload = () => setProfilePhotoPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleSave = async () => {
+    const token = typeof window !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('auth_token')) : null;
+    if (!token) return;
+    setProfileSaving(true);
+    try {
+      let avatarUrl: string | null = user?.avatar_url ?? null;
+      if (profilePhotoFile) {
+        const formData = new FormData();
+        formData.append('image', profilePhotoFile);
+        const uploadRes = await axios.post(`${apiUrl}/upload/profile-image`, formData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (uploadRes.data?.url) avatarUrl = uploadRes.data.url;
+      }
+      const res = await axios.put(
+        `${apiUrl}/users/me`,
+        { firstname, lastname, phone, avatar_url: avatarUrl },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const updatedUser = res.data?.user;
+      if (updatedUser) {
+        setUser(updatedUser);
+        updateUser(updatedUser);
+        setProfilePhotoFile(null);
+        setProfilePhotoPreview(null);
+        toast.success('Profil enregistré');
+      }
+    } catch (err: unknown) {
+      console.error('Erreur enregistrement profil:', err);
+      toast.error((err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Erreur lors de l\'enregistrement');
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
+  const avatarDisplayUrl = profilePhotoPreview || user?.avatar_url || null;
+
+  return (
+    <div
+      className="rounded-2xl border p-6 sm:p-8"
+      style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
+    >
+      <h2 className="font-display text-xl font-semibold mb-6" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
+        Mon profil
+      </h2>
+      <div className="space-y-6 max-w-md">
+        <div className="flex items-center gap-6">
+          <div
+            className="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl overflow-hidden bg-cover bg-center shrink-0"
+            style={{
+              backgroundColor: colors.primaryDark,
+              backgroundImage: avatarDisplayUrl ? `url(${avatarDisplayUrl})` : undefined,
+            }}
+          >
+            {!avatarDisplayUrl && (user?.firstname?.charAt(0) || user?.first_name?.charAt(0) || 'U')}
+          </div>
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={handlePhotoChange}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-4 py-2 rounded-xl font-medium text-sm transition-opacity hover:opacity-90"
+              style={{ backgroundColor: colors.primaryLink, color: colors.white, fontFamily: fonts.body }}
+            >
+              {user?.avatar_url || profilePhotoPreview ? 'Changer la photo' : 'Ajouter une photo'}
+            </button>
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
+            Prénom
+          </label>
+          <input
+            type="text"
+            value={firstname}
+            onChange={(e) => setFirstname(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border"
+            style={{ fontFamily: fonts.body, borderColor: colors.bgSurface, color: colors.textDark }}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
+            Nom
+          </label>
+          <input
+            type="text"
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border"
+            style={{ fontFamily: fonts.body, borderColor: colors.bgSurface, color: colors.textDark }}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
+            Email
+          </label>
+          <input
+            type="email"
+            value={user?.email || ''}
+            disabled
+            className="w-full px-4 py-3 rounded-xl border opacity-80"
+            style={{ fontFamily: fonts.body, backgroundColor: colors.bgCream, borderColor: colors.bgSurface, color: colors.textDark }}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
+            Téléphone
+          </label>
+          <input
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border"
+            style={{ fontFamily: fonts.body, borderColor: colors.bgSurface, color: colors.textDark }}
+          />
+        </div>
+        <button
+          type="button"
+          disabled={profileSaving}
+          onClick={handleSave}
+          className="px-6 py-3 rounded-xl font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+          style={{ backgroundColor: colors.primaryDark, fontFamily: fonts.body }}
+        >
+          {profileSaving ? 'Enregistrement...' : 'Enregistrer'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const router = useRouter();
-  const { logout } = useAuth();
+  const { logout, updateUser } = useAuth();
   const [user, setUser] = useState<DashboardUser | null>(null);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null);
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [mounted, setMounted] = useState(false);
@@ -76,7 +265,7 @@ export default function Dashboard() {
         return;
       }
 
-      // Utiliser les données locales d'abord
+      // Données locales d'abord pour affichage immédiat
       if (userStr) {
         try {
           const userData = JSON.parse(userStr);
@@ -86,7 +275,20 @@ export default function Dashboard() {
         }
       }
 
-      // Charger commandes (ne pas bloquer le chargement si ça échoue)
+      // Charger le profil à jour depuis l'API (firstname, lastname, phone, avatar_url)
+      try {
+        const profileRes = await axios.get(`${API_URL}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (profileRes.data?.user) {
+          const apiUser = profileRes.data.user;
+          setUser((prev) => ({ ...prev, ...apiUser }));
+          localStorage.setItem('user', JSON.stringify({ ...JSON.parse(userStr || '{}'), ...apiUser }));
+        }
+      } catch (err) {
+        console.error('Erreur chargement profil:', err);
+      }
+
       loadOrders().catch((err) => {
         console.error('Erreur chargement commandes:', err);
       });
@@ -264,29 +466,6 @@ export default function Dashboard() {
               <p style={{ fontFamily: fonts.body, fontSize: fontSizes.bodySmall, color: colors.textGray, lineHeight: lineHeights.normal }}>
                 Votre espace commandes click & collect
               </p>
-              {/* Bandeau décoratif — image café adaptée mobile */}
-              <div className="mt-6 rounded-2xl overflow-hidden border shadow-sm max-w-2xl" style={{ borderColor: colors.bgSurface }}>
-                <div className="relative w-full aspect-[3/1] sm:aspect-[4/1] min-h-[100px]">
-                  <Image
-                    src="/images/acceuil-3.png"
-                    alt=""
-                    fill
-                    className="object-cover object-center"
-                    sizes="(max-width: 640px) 100vw, 672px"
-                  />
-                  <div
-                    className="absolute inset-0 flex items-center justify-center"
-                    style={{ background: 'linear-gradient(to right, rgba(13,42,92,0.25), rgba(13,42,92,0.15))' }}
-                  >
-                    <span
-                      className="font-display font-semibold text-white text-lg sm:text-xl drop-shadow-md"
-                      style={{ fontFamily: fonts.display }}
-                    >
-                      {SITE.tagline}
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
@@ -302,13 +481,18 @@ export default function Dashboard() {
                 >
                   <div className="mb-6 text-center">
                     <div
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-xl sm:text-2xl"
-                      style={{ backgroundColor: colors.primaryDark }}
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-xl sm:text-2xl overflow-hidden bg-cover bg-center"
+                      style={{
+                        backgroundColor: colors.primaryDark,
+                        backgroundImage: (user as { avatar_url?: string })?.avatar_url ? `url(${(user as { avatar_url: string }).avatar_url})` : undefined,
+                      }}
                     >
-                      {user?.firstname?.charAt(0) || user?.first_name?.charAt(0) || user?.name?.charAt(0) || 'U'}
+                      {!(user as { avatar_url?: string })?.avatar_url && (
+                        <span>{user?.firstname?.charAt(0) || user?.first_name?.charAt(0) || user?.name?.charAt(0) || 'U'}</span>
+                      )}
                     </div>
                     <h3 className="font-display font-semibold truncate px-2" style={{ fontFamily: fonts.display, fontSize: fontSizes.body, color: colors.textDark }}>
-                      {user?.name || user?.email}
+                      {user?.firstname && user?.lastname ? `${user.firstname} ${user.lastname}` : user?.name || user?.email}
                     </h3>
                     <p className="text-sm truncate px-2 mt-1" style={{ fontFamily: fonts.body, color: colors.textMuted }}>
                       {user?.email}
@@ -565,52 +749,18 @@ export default function Dashboard() {
                 )}
 
                 {activeTab === 'profile' && (
-                  <div
-                    className="rounded-2xl border p-6 sm:p-8"
-                    style={{ backgroundColor: colors.white, borderColor: colors.bgSurface, boxShadow: layout.cardShadow }}
-                  >
-                    <h2 className="font-display text-xl font-semibold mb-6" style={{ fontFamily: fonts.display, color: colors.primaryDark }}>
-                      Mon profil
-                    </h2>
-                    <div className="space-y-4 max-w-md">
-                      <div>
-                        <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
-                          Nom complet
-                        </label>
-                        <input
-                          type="text"
-                          value={user?.name || ''}
-                          disabled
-                          className="w-full px-4 py-3 rounded-xl border"
-                          style={{ fontFamily: fonts.body, backgroundColor: colors.bgCream, borderColor: colors.bgSurface, color: colors.textDark }}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          value={user?.email || ''}
-                          disabled
-                          className="w-full px-4 py-3 rounded-xl border"
-                          style={{ fontFamily: fonts.body, backgroundColor: colors.bgCream, borderColor: colors.bgSurface, color: colors.textDark }}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-2" style={{ fontFamily: fonts.body, color: colors.textGray }}>
-                          Téléphone
-                        </label>
-                        <input
-                          type="tel"
-                          value={user?.phone || ''}
-                          disabled
-                          className="w-full px-4 py-3 rounded-xl border"
-                          style={{ fontFamily: fonts.body, backgroundColor: colors.bgCream, borderColor: colors.bgSurface, color: colors.textDark }}
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <ProfileForm
+                    user={user}
+                    setUser={setUser}
+                    updateUser={updateUser}
+                    profileSaving={profileSaving}
+                    setProfileSaving={setProfileSaving}
+                    profilePhotoFile={profilePhotoFile}
+                    setProfilePhotoFile={setProfilePhotoFile}
+                    profilePhotoPreview={profilePhotoPreview}
+                    setProfilePhotoPreview={setProfilePhotoPreview}
+                    apiUrl={API_URL}
+                  />
                 )}
               </div>
             </div>

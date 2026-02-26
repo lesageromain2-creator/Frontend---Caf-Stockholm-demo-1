@@ -132,64 +132,61 @@ export default function CartePage() {
   return (
     <>
       <Head>
-        <title>{`La Carte — ${SITE.name}, Lyon`}</title>
-        <meta name="description" content="Carte du café suédois : boissons chaudes et froides, smörgås, pâtisseries, alcools. Kafé Stockholm, Lyon 1er." />
+        <title>{`Click & Collect — ${SITE.name}, Lyon`}</title>
+        <meta name="description" content="Commandez en ligne et retirez au café : boissons, smörgås, pâtisseries. Kafé Stockholm, Lyon 1er." />
       </Head>
 
       <EcommerceLayout>
         <div className="max-w-grid mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-          <h1 className="font-display text-h1 text-kafe-primary-dark mb-2">La Carte</h1>
-          <p className="text-kafe-text-secondary text-small mb-6">Smörgås, kanelbullar, café suédois et plus.</p>
+          <h1 className="font-display text-h1 text-kafe-primary-dark mb-2">Click & Collect</h1>
+          <p className="text-kafe-text-secondary text-small mb-6">Choisissez vos articles, commandez en ligne et retirez au café.</p>
 
-          {/* Filtres pills */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {(['all', 'vegetarian', 'vegan', 'signature'] as const).map((f) => (
-              <button
-                key={f}
-                type="button"
-                onClick={() => setFilter(f)}
-                className={`px-4 py-2 rounded-capsule text-small font-heading font-medium transition-colors ${
-                  filter === f
-                    ? 'bg-kafe-primary text-white'
-                    : 'bg-kafe-surface text-kafe-text hover:bg-kafe-border'
+          {/* Filtres : catégories + régime */}
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mb-6">
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/carte"
+                className={`shrink-0 px-4 py-2 rounded-refined text-small font-heading whitespace-nowrap block ${
+                  !categorySlug ? 'bg-kafe-primary text-white' : 'text-kafe-text hover:bg-kafe-surface'
                 }`}
               >
-                {f === 'all' ? 'Tout' : f === 'vegetarian' ? 'Végétarien' : f === 'vegan' ? 'Vegan' : 'Signature'}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar catégories (desktop) / Tabs (mobile) */}
-            <aside className="lg:w-56 shrink-0">
-              <nav className="flex lg:flex-col gap-1 overflow-x-auto pb-2 lg:pb-0">
-                <Link
-                  href="/carte"
-                  className={`shrink-0 px-4 py-2 rounded-refined text-small font-heading whitespace-nowrap block ${
-                    !categorySlug ? 'bg-kafe-primary text-white' : 'text-kafe-text hover:bg-kafe-surface'
+                Toutes catégories
+              </Link>
+              {categories.map((cat) => {
+                const isActive = categorySlug === cat.slug || (Array.isArray(categorySlug) && categorySlug[0] === cat.slug);
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/carte?category=${encodeURIComponent(cat.slug)}`}
+                    className={`shrink-0 px-4 py-2 rounded-refined text-small font-heading whitespace-nowrap block ${
+                      isActive ? 'bg-kafe-primary text-white' : 'text-kafe-text hover:bg-kafe-surface'
+                    }`}
+                  >
+                    {cat.name}
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="flex flex-wrap gap-2 sm:ml-auto">
+              {(['all', 'vegetarian', 'vegan', 'signature'] as const).map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setFilter(f)}
+                  className={`px-4 py-2 rounded-capsule text-small font-heading font-medium transition-colors ${
+                    filter === f
+                      ? 'bg-kafe-primary text-white'
+                      : 'bg-kafe-surface text-kafe-text hover:bg-kafe-border'
                   }`}
                 >
-                  Toute la carte
-                </Link>
-                {categories.map((cat) => {
-                  const isActive = categorySlug === cat.slug || (Array.isArray(categorySlug) && categorySlug[0] === cat.slug);
-                  return (
-                    <Link
-                      key={cat.id}
-                      href={`/carte?category=${encodeURIComponent(cat.slug)}`}
-                      className={`shrink-0 px-4 py-2 rounded-refined text-small font-heading whitespace-nowrap block ${
-                        isActive ? 'bg-kafe-primary text-white' : 'text-kafe-text hover:bg-kafe-surface'
-                      }`}
-                    >
-                      {cat.name}
-                    </Link>
-                  );
-                })}
-              </nav>
-            </aside>
+                  {f === 'all' ? 'Tout' : f === 'vegetarian' ? 'Végétarien' : f === 'vegan' ? 'Vegan' : 'Signature'}
+                </button>
+              ))}
+            </div>
+          </div>
 
-            {/* Grille produits */}
-            <div className="flex-1 min-w-0">
+          {/* Grille produits — plus de sidebar */}
+          <div className="w-full">
               {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {[...Array(6)].map((_, i) => (
@@ -206,7 +203,6 @@ export default function CartePage() {
                 </div>
               )}
             </div>
-          </div>
         </div>
       </EcommerceLayout>
     </>

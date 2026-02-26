@@ -9,15 +9,6 @@ import { useRouter } from 'next/router';
 import { useCartStore } from '@/lib/cart-store';
 import { useAuth } from '@/hooks/useAuth';
 import { SITE } from '@/lib/site-config';
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-}
 
 const navLinks = [
   { label: 'Accueil', href: '/' },
@@ -31,8 +22,6 @@ export default function EcommerceHeaderFigma() {
   const router = useRouter();
   const { getItemCount } = useCartStore();
   const { user, isAuthenticated, logout } = useAuth();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [carteHover, setCarteHover] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -49,16 +38,20 @@ export default function EcommerceHeaderFigma() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  useEffect(() => {
-    axios.get(`${API_URL}/ecommerce/categories`).then((res) => {
-      if (res.data?.success && res.data.categories) setCategories(res.data.categories);
-    }).catch(() => {});
-  }, []);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+  }, [mobileMenuOpen]);
+
+  const isActive = (href: string) =>
+    href === '/' ? router.pathname === '/' : router.pathname.startsWith(href);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300" style={{ backgroundColor: '#233C9D' }} data-figma="Group Header">
@@ -89,39 +82,13 @@ export default function EcommerceHeaderFigma() {
             >
               Accueil
             </Link>
-            <div
-              className="relative"
-              onMouseEnter={() => setCarteHover(true)}
-              onMouseLeave={() => setCarteHover(false)}
+            <Link
+              href="/menu"
+              className="font-medium text-white uppercase transition-all duration-300 ease-out hover:opacity-100 hover:scale-105 hover:-translate-y-0.5"
+              style={{ fontFamily: 'DM Sans', fontSize: 19.68, letterSpacing: '0.05em', opacity: 0.88 }}
             >
-              <Link
-                href="/menu"
-                className="font-medium text-white uppercase transition-all duration-300 ease-out hover:opacity-100 hover:scale-105 hover:-translate-y-0.5"
-                style={{ fontFamily: 'DM Sans', fontSize: 19.68, letterSpacing: '0.05em', opacity: 0.88 }}
-              >
-                La carte
-              </Link>
-              {carteHover && (
-                <div className="absolute top-full left-0 pt-2 -ml-2 z-50">
-                  <div className="bg-white border border-kafe-border shadow-refined-hover rounded-lg py-2 min-w-[200px]">
-                    <Link href="/menu" className="block px-4 py-2.5 text-sm text-kafe-text hover:bg-kafe-primary-xlight transition-colors">
-                      Toute la carte
-                    </Link>
-                    {categories.length > 0
-                      ? categories.map((cat) => (
-                          <Link key={cat.id} href={`/menu#${cat.slug}`} className="block px-4 py-2.5 text-sm text-kafe-text hover:bg-kafe-primary-xlight transition-colors">
-                            {cat.name}
-                          </Link>
-                        ))
-                      : SITE.navCarte.map((link) => (
-                          <Link key={link.href} href={link.href} className="block px-4 py-2.5 text-sm text-kafe-text hover:bg-kafe-primary-xlight transition-colors">
-                            {link.label}
-                          </Link>
-                        ))}
-                  </div>
-                </div>
-              )}
-            </div>
+              La carte
+            </Link>
             {navLinks.slice(2).map((link) => (
               <Link
                 key={link.href}
@@ -241,46 +208,180 @@ export default function EcommerceHeaderFigma() {
               )}
             </Link>
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button — burger 3 lignes → X (style drawer) */}
             <button
               type="button"
-              className="lg:hidden p-1.5 sm:p-2 text-white hover:bg-white/10 rounded-lg transition-all flex-shrink-0"
+              aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+              aria-expanded={mobileMenuOpen}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu"
+              className={`lg:hidden flex flex-col justify-center items-center gap-1.5 w-12 h-12 rounded-xl border-none bg-white/10 text-white cursor-pointer transition-all duration-300 hover:bg-white/20 hover:scale-105 flex-shrink-0 menu-drawer-burger ${mobileMenuOpen ? 'menu-drawer-burger--open' : ''}`}
             >
-              {mobileMenuOpen ? (
-                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
+              <span className="menu-drawer-line" />
+              <span className="menu-drawer-line" />
+              <span className="menu-drawer-line" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Overlay — fond semi-transparent + blur (mobile) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 border-t border-white/10 shadow-lg z-40" style={{ backgroundColor: '#233C9D' }}>
-          <nav className="max-w-[1986px] mx-auto px-4 py-4 flex flex-col gap-1">
+        <div
+          className="lg:hidden fixed inset-0 z-[60] bg-[#233C9D]/80 backdrop-blur-sm"
+          role="button"
+          tabIndex={0}
+          aria-label="Fermer"
+          onClick={() => setMobileMenuOpen(false)}
+          onKeyDown={(e) => e.key === 'Escape' && setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Drawer mobile — panneau crème depuis la droite (style Collection Aur'art adapté Kafé) */}
+      <aside
+        className={`lg:hidden fixed top-0 right-0 bottom-0 w-[min(320px,88%)] z-[70] overflow-y-auto transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        style={{
+          background: '#F5EDE0',
+          boxShadow: '-8px 0 40px rgba(13, 42, 92, 0.2)',
+        }}
+        aria-hidden={!mobileMenuOpen}
+      >
+        <div className="flex flex-col min-h-full px-6 py-7">
+          {/* Tête du drawer : titre + fermer */}
+          <div
+            className="flex items-center justify-between mb-6 pb-4 border-b-2 border-transparent"
+            style={{ borderImage: 'linear-gradient(90deg, #0D2A5C, #233C9D, #F5C842) 1' }}
+          >
+            <span className="font-display text-xl font-semibold" style={{ fontFamily: 'Playfair Display', color: '#0D2A5C' }}>
+              {SITE.name}
+            </span>
+            <button
+              type="button"
+              aria-label="Fermer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center w-11 h-11 rounded-xl border-none transition-colors hover:bg-[#0D2A5C] hover:text-white"
+              style={{ background: 'rgba(13, 42, 92, 0.08)', color: '#0D2A5C' }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Nav principale */}
+          <nav className="flex flex-col gap-0.5">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="py-3 font-heading font-medium text-white uppercase tracking-[0.05em] transition-all duration-300 ease-out hover:opacity-100 hover:scale-105" style={{ fontFamily: 'DM Sans' }} onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block py-4 px-4 text-lg font-medium rounded-xl transition-all duration-200 relative overflow-hidden ${
+                  isActive(link.href) ? 'bg-[#0D2A5C]/12 text-[#1A4A8A] font-semibold' : 'text-[#1A1A1A] hover:bg-[#0D2A5C]/10 hover:pl-5'
+                }`}
+                style={{ fontFamily: 'DM Sans' }}
+              >
                 {link.label}
               </Link>
             ))}
-            <Link href="/carte" className="py-3 font-heading font-bold text-kafe-accent transition-all duration-300 ease-out hover:scale-105 hover:opacity-100" onClick={() => setMobileMenuOpen(false)}>Click & Collect</Link>
-            <Link href={isAuthenticated ? '/dashboard' : '/login'} className="py-3 font-heading font-medium text-white" style={{ fontFamily: 'DM Sans' }} onClick={() => setMobileMenuOpen(false)}>
+
+            {/* Click & Collect — bouton mis en avant */}
+            <Link
+              href="/carte"
+              onClick={() => setMobileMenuOpen(false)}
+              className="mt-4 block w-full py-4 px-4 text-center text-base font-bold rounded-xl transition-all hover:opacity-95 hover:scale-[1.02]"
+              style={{
+                fontFamily: 'DM Sans',
+                background: '#F5C842',
+                color: '#0D2A5C',
+                boxShadow: '0 4px 14px rgba(245,200,66,0.35)',
+              }}
+            >
+              Click & Collect
+            </Link>
+
+            {/* Compte + Panier */}
+            <Link
+              href={isAuthenticated ? '/dashboard' : '/login'}
+              onClick={() => setMobileMenuOpen(false)}
+              className="mt-2 block py-3 px-4 text-base font-medium rounded-xl text-[#1A1A1A] hover:bg-[#0D2A5C]/10 transition-all"
+              style={{ fontFamily: 'DM Sans' }}
+            >
               {isAuthenticated ? 'Mon compte' : 'Connexion'}
             </Link>
-            <Link href="/cart" className="py-3 font-heading font-medium flex items-center gap-2 text-white" style={{ fontFamily: 'DM Sans' }} onClick={() => setMobileMenuOpen(false)}>
+            <Link
+              href="/cart"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-3 px-4 text-base font-medium rounded-xl text-[#1A1A1A] hover:bg-[#0D2A5C]/10 transition-all flex items-center gap-2"
+              style={{ fontFamily: 'DM Sans' }}
+            >
               Ma commande {mounted && itemCount > 0 && `(${itemCount})`}
             </Link>
           </nav>
+
+          {/* Pied du drawer — bordure gradient + action principale */}
+          <div
+            className="mt-auto pt-6 border-t-2 border-transparent"
+            style={{ borderImage: 'linear-gradient(90deg, #0D2A5C, #233C9D, #F5C842) 1' }}
+          >
+            {isAuthenticated ? (
+              <div className="flex flex-col gap-3">
+                {user?.role === 'admin' && (
+                  <Link
+                    href="/admin/ecommerce/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block w-full py-3.5 px-4 text-center text-base font-semibold rounded-xl border border-[#1A4A8A] transition-colors hover:bg-[#0D2A5C]/10"
+                    style={{ fontFamily: 'DM Sans', background: 'rgba(13, 42, 92, 0.06)', color: '#0D2A5C' }}
+                  >
+                    Admin
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full py-3.5 px-4 text-base font-semibold rounded-xl border-none cursor-pointer transition-all text-white hover:opacity-95"
+                  style={{ fontFamily: 'DM Sans', background: 'linear-gradient(135deg, #233C9D 0%, #0D2A5C 100%)', boxShadow: '0 4px 12px rgba(13, 42, 92, 0.3)' }}
+                >
+                  Déconnexion
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full py-3.5 px-4 text-center text-base font-semibold rounded-xl text-white transition-all hover:opacity-95"
+                style={{ fontFamily: 'DM Sans', background: 'linear-gradient(135deg, #233C9D 0%, #0D2A5C 100%)', boxShadow: '0 4px 12px rgba(13, 42, 92, 0.3)' }}
+              >
+                Connexion
+              </Link>
+            )}
+          </div>
         </div>
-      )}
+      </aside>
+
+      {/* Styles pour le burger 3 lignes → X */}
+      <style jsx>{`
+        .menu-drawer-line {
+          display: block;
+          width: 22px;
+          height: 2.5px;
+          border-radius: 2px;
+          background: currentColor;
+          transition: transform 0.25s, opacity 0.25s;
+        }
+        .menu-drawer-burger--open .menu-drawer-line:nth-child(1) {
+          transform: translateY(8.5px) rotate(45deg);
+        }
+        .menu-drawer-burger--open .menu-drawer-line:nth-child(2) {
+          opacity: 0;
+        }
+        .menu-drawer-burger--open .menu-drawer-line:nth-child(3) {
+          transform: translateY(-8.5px) rotate(-45deg);
+        }
+      `}</style>
     </header>
   );
 }

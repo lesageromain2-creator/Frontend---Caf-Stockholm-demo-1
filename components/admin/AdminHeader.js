@@ -1,6 +1,7 @@
 // frontend/components/admin/AdminHeader.js - Kafé Stockholm Admin
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Bell, User, ChevronDown, Settings, LogOut, Menu } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { logout } from '../../utils/api';
@@ -92,7 +93,7 @@ export default function AdminHeader({ user, onMenuClick }) {
                 {user?.avatar_url ? (
                   <img src={user.avatar_url} alt="Avatar" />
                 ) : (
-                  <span>{getInitials(user?.firstname, user?.lastname)}</span>
+                  <Image src="/images/logo.png" alt="Kafé Stockholm" width={36} height={36} className="profile-logo" />
                 )}
               </div>
               <div className="profile-info">
@@ -322,6 +323,12 @@ export default function AdminHeader({ user, onMenuClick }) {
           height: 100%;
           border-radius: 10px;
           object-fit: cover;
+        }
+
+        .profile-avatar :global(.profile-logo) {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
         }
 
         .profile-info {

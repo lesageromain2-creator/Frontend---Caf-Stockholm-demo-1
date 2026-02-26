@@ -98,7 +98,7 @@ export default function ChatbotWidget() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-kafe-primary text-white rounded-full w-16 h-16 shadow-2xl flex items-center justify-center hover:opacity-90 transition-opacity"
+        className="fixed z-50 bg-kafe-primary text-white rounded-full w-14 h-14 md:w-16 md:h-16 shadow-2xl flex items-center justify-center hover:opacity-90 transition-opacity bottom-4 right-4 md:bottom-6 md:right-6"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         aria-label={isOpen ? 'Fermer Björn' : 'Ouvrir Björn'}
@@ -125,23 +125,25 @@ export default function ChatbotWidget() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-24 right-6 z-40 w-[400px] h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border-2 border-kafe-primary/20"
+            className="fixed z-40 flex flex-col overflow-hidden bg-white shadow-2xl border-2 border-kafe-primary/20
+              bottom-24 right-4 left-auto top-auto w-[min(320px,calc(100vw-2rem))] h-[min(520px,calc(100vh-7rem))] rounded-2xl
+              md:right-6 md:w-[400px] md:h-[600px] md:max-h-[calc(100vh-6rem)]"
           >
-            <div className="bg-kafe-primary text-white p-4 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-heading text-lg">
+            <div className="bg-kafe-primary text-white p-3 md:p-4 flex items-center justify-between shrink-0">
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-9 h-9 md:w-10 md:h-10 bg-white/20 rounded-full flex items-center justify-center font-heading text-base md:text-lg shrink-0">
                   B
                 </div>
-                <div>
-                  <h3 className="font-heading font-semibold">Björn</h3>
-                  <p className="text-sm text-white/90">
+                <div className="min-w-0">
+                  <h3 className="font-heading font-semibold text-base md:text-lg">Björn</h3>
+                  <p className="text-xs md:text-sm text-white/90 truncate">
                     {isLoading ? 'En train d\'écrire...' : 'Guide Kafé Stockholm'}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-white/80 hover:text-white transition p-1"
+                className="text-white/80 hover:text-white transition p-2 -m-2 touch-manipulation"
                 aria-label="Fermer"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,7 +152,7 @@ export default function ChatbotWidget() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-kafe-bg/50">
+            <div className="flex-1 min-h-0 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 bg-kafe-bg/50">
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
@@ -159,13 +161,13 @@ export default function ChatbotWidget() {
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                    className={`max-w-[85%] md:max-w-[80%] rounded-2xl px-3 py-2 md:px-4 ${
                       message.role === 'user'
                         ? 'bg-kafe-primary text-white'
                         : 'bg-white text-kafe-charcoal shadow-sm border border-kafe-pearl'
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
                     <p
                       className={`text-xs mt-1 ${
                         message.role === 'user' ? 'text-white/80' : 'text-kafe-charcoal/50'
@@ -199,14 +201,14 @@ export default function ChatbotWidget() {
             </div>
 
             {messages.length === 1 && (
-              <div className="px-4 py-2 bg-white border-t border-kafe-pearl">
+              <div className="px-3 md:px-4 py-2 bg-white border-t border-kafe-pearl shrink-0">
                 <p className="text-xs text-kafe-charcoal/60 mb-2">Suggestions :</p>
                 <div className="flex flex-wrap gap-2">
                   {QUICK_SUGGESTIONS.map((suggestion, index) => (
                     <button
                       key={index}
                       onClick={() => setInputValue(suggestion)}
-                      className="text-xs bg-kafe-pearl/50 hover:bg-kafe-primary/10 text-kafe-charcoal px-3 py-1.5 rounded-full transition border border-kafe-pearl"
+                      className="text-xs bg-kafe-pearl/50 hover:bg-kafe-primary/10 text-kafe-charcoal px-3 py-2 md:py-1.5 rounded-full transition border border-kafe-pearl touch-manipulation"
                     >
                       {suggestion}
                     </button>
@@ -215,7 +217,7 @@ export default function ChatbotWidget() {
               </div>
             )}
 
-            <div className="p-4 bg-white border-t border-kafe-pearl">
+            <div className="p-3 md:p-4 bg-white border-t border-kafe-pearl shrink-0">
               <div className="flex space-x-2">
                 <input
                   type="text"
@@ -224,12 +226,12 @@ export default function ChatbotWidget() {
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                   placeholder="Votre question..."
                   disabled={isLoading}
-                  className="flex-1 px-4 py-2 border border-kafe-pearl rounded-full focus:outline-none focus:ring-2 focus:ring-kafe-primary text-kafe-charcoal disabled:bg-kafe-pearl/30"
+                  className="flex-1 min-w-0 px-3 py-2.5 md:px-4 md:py-2 border border-kafe-pearl rounded-full focus:outline-none focus:ring-2 focus:ring-kafe-primary text-kafe-charcoal text-base disabled:bg-kafe-pearl/30"
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={isLoading || !inputValue.trim()}
-                  className="bg-kafe-primary hover:bg-kafe-primary/90 text-white p-2 rounded-full disabled:opacity-50 transition"
+                  className="bg-kafe-primary hover:bg-kafe-primary/90 text-white p-2.5 md:p-2 rounded-full disabled:opacity-50 transition shrink-0 touch-manipulation"
                   aria-label="Envoyer"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

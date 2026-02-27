@@ -118,14 +118,9 @@ export default function MenuPage() {
       </Head>
 
       <EcommerceLayout>
-        <div className="w-full pt-[136px]" style={{ background: colors.bgPage }}>
-          {/* Hero titre — sans image de fond, drapeau suédois en haut à droite */}
-          <section className="relative w-full overflow-hidden py-16 md:py-24">
-            <img
-              src="/images/drapeau%20officiel%20suede.jpg"
-              alt="Drapeau suédois"
-              className="absolute top-6 right-6 w-16 h-auto md:w-20 object-contain drop-shadow-md"
-            />
+        <div className="w-full pt-[112px]" style={{ background: colors.bgPage }}>
+          {/* Hero titre simple */}
+          <section className="relative w-full overflow-hidden pt-10 pb-16 md:pt-12 md:pb-20">
             <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
               <h1
                 className="font-display font-bold"
